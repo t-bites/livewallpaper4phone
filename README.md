@@ -10,7 +10,7 @@ chmod +x scripts/collect_wallpapers.sh
 bash scripts/collect_wallpapers.sh
 
 # 本地预览站点
-cd site && python3 -m http.server 8000
+cd docs && python3 -m http.server 8000
 ```
 
 ## 目录结构
@@ -22,7 +22,7 @@ livewallpaper4phone/
 ├── todo.md          # 改进队列
 ├── scripts/
 │   └── collect_wallpapers.*  # 壁纸数据采集
-├── site/             # 静态站点
+├── docs/             # 静态站点
 │   ├── index.html    # 首页（壁纸浏览）
 │   ├── tutorials.html # 设置教程
 │   └── assets/

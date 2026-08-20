@@ -8,10 +8,10 @@ SITE_REPO="https://github.com/t-bites/livewallpaper4phone.git"
 MSG="${1:-deploy: $(date '+%F %H:%M')}"
 
 # .nojekyll 防 Jekyll 吞文件
-touch site/.nojekyll
+touch docs/.nojekyll
 
 TMP=$(mktemp -d)
-cp -r site/* "$TMP/"
+cp -r docs/* "$TMP/"
 cd "$TMP" || exit 1
 git init -b main 2>/dev/null
 git config user.name "t-bites"

@@ -40,7 +40,7 @@ collect_wallpapers.py
     │   ├── 提取每个帖子中的视频
     │   └── 更新元数据 JSON
     │
-    └── 输出 → site/assets/data/wallpapers.json（增量合并）
+    └── 输出 → docs/assets/data/wallpapers.json（增量合并）
 ```
 
 ### 2.3 提示词收集策略
@@ -188,7 +188,7 @@ livewallpaper4phone/
 ├── .gitignore
 ├── scripts/
 │   └── collect_wallpapers.py  # 壁纸爬虫（元数据提取+分类）
-└── site/                      # 静态站点（推送至 GitHub Pages）
+└── docs/                      # 静态站点（推送至 GitHub Pages）
     ├── index.html              # 首页（壁纸浏览+筛选）
     ├── tutorials.html          # 动态壁纸设置教程
     ├── about.html              # 关于/提交链接
