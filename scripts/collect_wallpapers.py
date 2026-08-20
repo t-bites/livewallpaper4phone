@@ -11,7 +11,7 @@ import json, os, re, subprocess, sys, time
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
-OUT = BASE / "site" / "assets" / "data" / "wallpapers.json"
+OUT = BASE / "docs" / "assets" / "data" / "wallpapers.json"
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 # ========== 帖子列表（来源账号 + 帖子 ID）==========
@@ -23,6 +23,12 @@ TWEETS = [
     ("Unique Wallpaper", "2090339921307267203"),
     ("Edimakor Taiwan", "2090272078054527409"),
     ("11:11", "2090099632810647930"),
+    # 新来源: @4KWallpapers254 (2026-08-20 新增)
+    ("4KWallpapers254", "2090021706593083561"),
+    ("4KWallpapers254", "2090545910875066528"),
+    ("4KWallpapers254", "2090500360947282100"),
+    ("4KWallpapers254", "2090454811066175547"),
+    ("4KWallpapers254", "2090424108739604947"),
 ]
 
 # ========== 分类工具 ==========
