@@ -183,3 +183,18 @@ header .stats { font-size: 12px; color: var(--text-muted); }
 .loading { text-align: center; padding: 60px; color: var(--text-muted); }
 .spinner { width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* 语言切换 */
+.lang-switcher { display: flex; gap: 2px; margin-left: auto; margin-right: 8px; }
+.lang-btn {
+  background: var(--card-bg); color: var(--text-muted);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 3px 10px; font-size: 12px; cursor: pointer;
+  transition: 0.2s;
+}
+.lang-btn:hover { border-color: var(--accent); color: var(--text); }
+.lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+@media (max-width: 600px) {
+  .lang-switcher { margin-left: 0; }
+  header { flex-wrap: wrap; }
+}
