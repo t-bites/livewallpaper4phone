@@ -122,6 +122,7 @@
           onmouseover="this.play()"
           onmouseout="this.pause()"
           onerror="this.style.display='none'"
+          referrerpolicy="no-referrer"
         ></video>
         <div class="overlay">
           <div class="quality-badge">${w.quality||'HD'}</div>
@@ -154,8 +155,9 @@
 
     // 构建下载链接
     const downloadUrl = w.tweet_url || '#';
+    const videoUrl = w.video_url || '';
 
-    modalVideo.innerHTML = `<video src="${w.video_url || ''}" autoplay loop muted playsinline controls></video>`;
+    modalVideo.innerHTML = `<video src="${videoUrl}" autoplay loop muted playsinline controls referrerpolicy="no-referrer"></video>`;
     modalBody.innerHTML = `
       <h2>${escapeHtml(w.title || '动态壁纸')}</h2>
       <div class="meta">
@@ -180,8 +182,9 @@
         <h4>📱 推荐机型</h4>
         <div class="chips">${(w.phone_types||['通用']).map(p => `<span class="chip">${p}</span>`).join('')}</div>
       </div>
-      <a class="download-btn" href="${downloadUrl}" target="_blank" rel="noopener">💾 跳转 X 保存原视频</a>
-      <div class="download-hint">在 X 页面上长按视频 → 保存到相册</div>
+      <button class="download-btn" onclick="window.open('${videoUrl}', '_blank', 'noopener,noreferrer')" referrerpolicy="no-referrer">💾 直接下载视频</button>
+      <div class="download-hint">新窗口打开视频 → 右键另存为（.mp4），保存到相册后设置为壁纸</div>
+      <a class="download-btn" style="background:var(--border);margin-top:6px;font-size:12px" href="${downloadUrl}" target="_blank" rel="noopener">🔗 跳转 X 查看原帖</a>
     `;
     modal.style.display = 'flex';
   };
