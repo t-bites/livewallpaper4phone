@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Wallpaper 4 Phone — 手机动态壁纸</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <h1>📱 <span>Live</span>Wallpaper4Phone</h1>
+  <nav>
+    <a href="index.html" class="active">壁纸</a>
+    <a href="tutorials.html">设置教程</a>
+  </nav>
+  <span class="stats" id="stats"></span>
+</header>
+
+<div class="filters" id="filters">
+  <label>比例</label>
+  <select id="filter-ar"><option value="">全部</option></select>
+  <label>清晰度</label>
+  <select id="filter-quality"><option value="">全部</option></select>
+  <label>风格</label>
+  <select id="filter-style"><option value="">全部</option></select>
+  <label>来源</label>
+  <select id="filter-source"><option value="">全部</option></select>
+  <label>有提示词</label>
+  <select id="filter-prompt"><option value="">全部</option><option value="yes">有</option><option value="no">无</option></select>
+  <input type="text" id="search" placeholder="🔍 搜索标题/标签/提示词...">
+  <button class="clear-btn" id="clear-all">清除</button>
+  <span class="count" id="result-count"></span>
+</div>
+
+<div class="wallpaper-grid" id="grid"></div>
+<div class="loading" id="loading"><div class="spinner"></div>加载壁纸中...</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-video" id="modal-video"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
