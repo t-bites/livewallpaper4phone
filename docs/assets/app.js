@@ -44,6 +44,7 @@
   // ========== 页面检测 ==========
   const isTutorialsPage = document.body.querySelector('.tutorial-page');
   const DATA_URL = 'assets/data/wallpapers.json';
+  const isMobile = window.matchMedia('(max-width: 768px)');
 
   // ========== DOM 引用 ==========
   const grid = document.getElementById('grid');
@@ -111,6 +112,14 @@
     // Search placeholder
     if (searchInput) searchInput.placeholder = t('search_placeholder');
 
+    // TabBar（移动端）
+    document.querySelectorAll('.tabbar a').forEach(a => {
+      const id = a.dataset.tab;
+      const key = id === 'index' ? 'nav_wallpapers' : id === 'tutorials' ? 'nav_tutorials' : 'x_tab_submit';
+      const label = a.querySelector('span:last-child');
+      if (label) label.textContent = t(key);
+    });
+
     // Clear button
     const clearBtn = document.getElementById('clear-all');
     if (clearBtn) clearBtn.textContent = t('clear_filters');
@@ -139,6 +148,7 @@
       if (loading) loading.style.display = 'none';
       initFilters();
       applyFilters();
+      bindChipHighlight();
       if (stats) stats.textContent = t('stats_template', { count: getPrimaries().length });
     } catch(e) {
       if (loading) loading.innerHTML = t('load_error');
@@ -152,6 +162,8 @@
     applyI18nToDOM();
     renderTutorials();
   }
+
+  addTabBar();
 
   // ========== 筛选器初始化 ==========
   function getPrimaries() {
@@ -264,7 +276,10 @@
     const groupSize = {};
     filtered.forEach(w => { groupSize[w.group] = (groupSize[w.group] || 0) + 1; });
 
-    grid.innerHTML = filtered.map((w, i) => `
+    grid.innerHTML = filtered.map((w, i) => {
+      if (!isMobile.matches) {
+        // 桌面：原网格卡片
+        return `
       <div class="wallpaper-card" data-idx="${i}" onclick="window.openModal(${i})" data-id="${w.id}">
         <div class="video-placeholder" style="width:100%;height:100%;background:#000;position:relative;">
           ${w.thumb ? `<img class="thumb" src="${w.thumb}" alt="" loading="lazy">` : ''}
@@ -279,42 +294,156 @@
           <div class="author">@${w.author} <span>${w.aspect_ratio}</span></div>
         </div>
       </div>
-    `).join('');
+    `;
+      }
+      // 移动端：X 帖子式 Feed 卡片
+      const liked = getLiked().has(w.id);
+      const display = w.author.replace(/[_]+/g, ' ');
+      return `
+      <article class="wallpaper-card x-post" data-idx="${i}" data-id="${w.id}" onclick="window.openModal(${i})">
+        <div class="x-head">
+          <a class="x-avatar" href="${escapeHtml(w.author_url || '#')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escapeHtml((w.author||'?').charAt(0))}</a>
+          <div class="x-names">
+            <div class="x-display">${escapeHtml(display)}</div>
+            <div class="x-handle">@${escapeHtml(w.author)} · ${daysAgo(w.collected_at)}</div>
+          </div>
+          <span class="x-more">⋯</span>
+        </div>
+        ${w.title ? `<div class="x-text">${escapeHtml(w.title)}</div>` : ''}
+        <div class="video-placeholder" style="width:100%;height:100%;background:#000;position:relative;">
+          ${w.thumb ? `<img class="thumb" src="${w.thumb}" alt="" loading="lazy">` : ''}
+          <div class="quality-badge">${w.quality||'HD'}</div>
+          ${groupSize[w.group] > 1 ? `<div class="multi-badge">▤ ${groupSize[w.group]}</div>` : ''}
+          <div class="loading-icon">▶</div>
+        </div>
+        <div class="x-actions">
+          <button class="x-action dl" aria-label="${t('modal_download_btn')}" data-act="dl" data-url="${escapeHtml(w.video_url||'')}">
+            <span class="x-ico">⬇</span><span>${t('x_download')}</span>
+          </button>
+          <a class="x-action link" href="${escapeHtml(w.tweet_url||'#')}" target="_blank" rel="noopener" aria-label="${t('modal_view_x')}">
+            <span class="x-ico">💬</span><span>${t('x_open_post')}</span>
+          </a>
+          <button class="x-action like${liked ? ' liked' : ''}" aria-label="like" data-act="like" data-id="${escapeHtml(w.id)}">
+            <span class="x-ico">${liked ? '❤️' : '🤍'}</span>
+          </button>
+          <span class="x-meta-badge">📱 ${escapeHtml(w.aspect_ratio||'')}</span>
+        </div>
+      </article>
+    `;
+    }).join('');
 
-    // Hover 时 fetch blob 并播放
+    attachCardBehaviors(groupSize);
+  }
+
+  // ========== 点赞（localStorage 本地）==========
+  function getLiked() {
+    try { return new Set(JSON.parse(localStorage.getItem('lw4p_likes') || '[]')); }
+    catch(e) { return new Set(); }
+  }
+  function toggleLike(id, btn) {
+    const liked = getLiked();
+    if (liked.has(id)) { liked.delete(id); btn.classList.remove('liked'); btn.querySelector('.x-ico').textContent = '🤍'; }
+    else { liked.add(id); btn.classList.add('liked'); btn.querySelector('.x-ico').textContent = '❤️'; }
+    localStorage.setItem('lw4p_likes', JSON.stringify([...liked]));
+  }
+  function daysAgo(dateStr) {
+    if (!dateStr) return t('x_time_now');
+    const days = Math.max(0, Math.round((Date.now() - new Date(dateStr).getTime()) / 86400000));
+    return t(days <= 0 ? 'x_time_today' : (days === 1 ? 'x_time_1d' : 'x_time_nd'), { n: days });
+  }
+
+  // ========== 卡片行为绑定：桌面 hover 播放 / 移动 IO 自动播 + 操作栏 ==========
+  var feedObserver = null;   // var: renderGrid 首次调用早于 let 初始化（TDZ）
+  function attachCardBehaviors(groupSize) {
     const cards = grid.querySelectorAll('.wallpaper-card');
-    let currentHover = null;
-    let prevBlobUrl = null;
-    cards.forEach(card => {
-      card.addEventListener('mouseenter', async () => {
-        if (currentHover) return;
-        currentHover = card;
-        const idx = parseInt(card.dataset.idx);
-        const w = filtered[idx];
-        if (!w.video_url) return;
-        const placeholder = card.querySelector('.video-placeholder');
-        const blobUrl = await loadVideoBlob(w.video_url);
-        if (!blobUrl) { card.querySelector('.loading-icon').textContent = '✗'; return; }
-        // Replace placeholder with video
-        const vid = document.createElement('video');
-        vid.src = blobUrl;
-        vid.autoplay = true;
-        vid.loop = true;
-        vid.muted = true;
-        vid.playsInline = true;
-        vid.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;';
-        placeholder.innerHTML = '';
-        placeholder.appendChild(vid);
-        card.querySelector('.loading-icon')?.remove();
+    if (feedObserver) { feedObserver.disconnect(); feedObserver = null; }
+    if (!isMobile.matches) {
+      // —— 桌面：hover 时 fetch blob 并播放（原逻辑）——
+      let currentHover = null;
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', async () => {
+          if (currentHover) return;
+          currentHover = card;
+          const idx = parseInt(card.dataset.idx);
+          const w = filtered[idx];
+          if (!w.video_url) return;
+          const placeholder = card.querySelector('.video-placeholder');
+          const blobUrl = await loadVideoBlob(w.video_url);
+          if (!blobUrl) { card.querySelector('.loading-icon').textContent = '✗'; return; }
+          const vid = document.createElement('video');
+          vid.src = blobUrl;
+          vid.autoplay = true;
+          vid.loop = true;
+          vid.muted = true;
+          vid.playsInline = true;
+          vid.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;';
+          placeholder.innerHTML = '';
+          placeholder.appendChild(vid);
+          card.querySelector('.loading-icon')?.remove();
+        });
+        card.addEventListener('mouseleave', () => {
+          if (currentHover === card) {
+            const vid = card.querySelector('video');
+            if (vid) vid.pause();
+            currentHover = null;
+          }
+        });
       });
-      card.addEventListener('mouseleave', () => {
-        if (currentHover === card) {
-          const vid = card.querySelector('video');
-          if (vid) vid.pause();
-          currentHover = null;
-        }
+      return;
+    }
+    // —— 移动端：操作栏 + IntersectionObserver 单条自动播 ——
+    grid.querySelectorAll('.x-action').forEach(el => {
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const act = el.dataset.act;
+        if (act === 'like') toggleLike(el.dataset.id, el);
+        else if (act === 'dl') window.open(el.dataset.url, '_blank', 'noopener,noreferrer');
       });
     });
+    // 同屏只播一条：进屏 fetch-blob 自动播放，出屏暂停并卸载 video（省内存）
+    let playingCard = null;
+    async function playCard(card) {
+      if (playingCard === card) return;
+      stopPlaying();
+      playingCard = card;
+      const idx = parseInt(card.dataset.idx);
+      const w = filtered[idx];
+      if (!w || !w.video_url) return;
+      const placeholder = card.querySelector('.video-placeholder');
+      if (!placeholder || placeholder.querySelector('video')) { startVid(placeholder); return; }
+      const blobUrl = await loadVideoBlob(w.video_url);
+      if (playingCard !== card) return;   // 等待期间已切走
+      if (!blobUrl) { const ic = card.querySelector('.loading-icon'); if (ic) ic.textContent = '✗'; return; }
+      const vid = document.createElement('video');
+      vid.src = blobUrl;
+      vid.autoplay = true;
+      vid.loop = true;
+      vid.muted = true;
+      vid.playsInline = true;
+      vid.setAttribute('webkit-playsinline', '');
+      vid.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;';
+      placeholder.innerHTML = '';
+      placeholder.appendChild(vid);
+      card.querySelector('.loading-icon')?.remove();
+      vid.play().catch(() => {});
+    }
+    function startVid(placeholder) {
+      const v = placeholder?.querySelector('video');
+      if (v) v.play().catch(() => {});
+    }
+    function stopPlaying() {
+      if (!playingCard) return;
+      const v = playingCard.querySelector('video');
+      if (v) v.pause();
+      playingCard = null;
+    }
+    feedObserver = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting && en.intersectionRatio >= 0.6) playCard(en.target);
+        else if (!en.isIntersecting && en.target === playingCard) stopPlaying();
+      });
+    }, { threshold: [0, 0.6] });
+    cards.forEach(c => feedObserver.observe(c));
   }
 
   // ========== 详情弹窗（组内可切换视频）==========
@@ -475,6 +604,38 @@
   if (navSubmit) navSubmit.addEventListener('click', e => { e.preventDefault(); window.openSubmit(); });
   const submitGo = document.getElementById('submit-go');
   if (submitGo) submitGo.addEventListener('click', doSubmit);
+
+  // ========== 移动端底部 TabBar（≤768px 显示，CSS 控制）==========
+  function addTabBar() {
+    if (document.querySelector('.tabbar')) return;
+    const bar = document.createElement('nav');
+    bar.className = 'tabbar';
+    const page = isTutorialsPage ? 'tutorials' : 'index';
+    const tabs = [
+      { href: 'index.html', ico: '🖼️', key: 'nav_wallpapers', id: 'index' },
+      { href: '#',            ico: '➕',  key: 'x_tab_submit',  id: 'submit', act: true },
+      { href: 'tutorials.html', ico: '📖', key: 'nav_tutorials', id: 'tutorials' },
+    ];
+    bar.innerHTML = tabs.map(tb => `
+      <a href="${tb.href}" data-tab="${tb.id}" class="${page === tb.id ? 'active' : ''}">
+        <span class="tab-ico">${tb.ico}</span><span>${t(tb.key)}</span>
+      </a>
+    `).join('');
+    document.body.appendChild(bar);
+    // 提交 tab 打开上报弹窗
+    const submitTab = bar.querySelector('[data-tab="submit"]');
+    submitTab.addEventListener('click', e => { e.preventDefault(); window.openSubmit(); });
+    applyI18nToDOM();
+  }
+
+  // ========== 筛选器 chip 高亮（有值时加 .filled）==========
+  function bindChipHighlight() {
+    document.querySelectorAll('#filters select').forEach(sel => {
+      sel.addEventListener('change', () => sel.classList.toggle('filled', !!sel.value));
+      const clearBtn = document.getElementById('clear-all');
+      if (clearBtn) clearBtn.addEventListener('click', () => sel.classList.remove('filled'));
+    });
+  }
 
   // ========== 教程页渲染 ==========
   function renderTutorials() {

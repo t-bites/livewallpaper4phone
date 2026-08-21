@@ -109,5 +109,12 @@
   "submit_go": "提交",
   "submit_hint": "提交后将跳转 GitHub 创建 Issue，由维护者收录",
   "submit_err_pw": "密码错误",
-  "submit_err_url": "请输入有效的 X 帖子链接"
+  "submit_err_url": "请输入有效的 X 帖子链接",
+  "x_download": "下载",
+  "x_open_post": "原帖",
+  "x_tab_submit": "提交",
+  "x_time_today": "今天",
+  "x_time_now": "刚刚",
+  "x_time_1d": "1 天",
+  "x_time_nd": "{n} 天"
 }

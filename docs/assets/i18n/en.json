@@ -109,5 +109,12 @@
   "submit_go": "Submit",
   "submit_hint": "You'll be redirected to GitHub to create an Issue",
   "submit_err_pw": "Wrong password",
-  "submit_err_url": "Please enter a valid X post URL"
+  "submit_err_url": "Please enter a valid X post URL",
+  "x_download": "Save",
+  "x_open_post": "Post",
+  "x_tab_submit": "Submit",
+  "x_time_today": "today",
+  "x_time_now": "now",
+  "x_time_1d": "1d",
+  "x_time_nd": "{n}d"
 }
