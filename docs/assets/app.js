@@ -117,6 +117,9 @@
 
     // Loading
     if (loading) loading.innerHTML = `<div class="spinner"></div>${t('loading')}`;
+
+    // Submit modal
+    applySubmitI18n();
   }
 
   // ========== 数据加载 ==========
@@ -411,6 +414,65 @@
   };
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeModal(); });
+
+  // ========== 上报入口 ==========
+  const SUBMIT_PASSWORD_SHA256 = '969c77b705da7377517482ffdb1b68fd0f5a90dfd55f282b8f65aa73733484c8';
+  const SUBMIT_URL_RE = /^https?:\/\/(www\.)?(x|twitter)\.com\/[A-Za-z0-9_]{1,15}\/status\/(\d+)/;
+
+  async function sha256Hex(s) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function applySubmitI18n() {
+    const set = (id, key) => { const el = document.getElementById(id); if (el) el.textContent = t(key); };
+    const ph = (id, key) => { const el = document.getElementById(id); if (el) el.placeholder = t(key); };
+    set('submit-title', 'submit_title'); set('label-pw', 'submit_pw'); set('label-url', 'submit_url');
+    set('label-note', 'submit_note'); set('submit-go', 'submit_go'); set('submit-hint', 'submit_hint');
+    ph('submit-pw', 'submit_pw_ph'); ph('submit-url', 'submit_url_ph'); ph('submit-note', 'submit_note_ph');
+  }
+
+  window.openSubmit = function() {
+    applySubmitI18n();
+    document.getElementById('submit-error').textContent = '';
+    const authed = localStorage.getItem('lw4p_submit_ok') === '1';
+    document.getElementById('pw-row').style.display = authed ? 'none' : 'block';
+    document.getElementById('submit-modal').style.display = 'flex';
+  };
+
+  window.closeSubmit = function(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('submit-modal').style.display = 'none';
+  };
+
+  async function doSubmit() {
+    const err = document.getElementById('submit-error');
+    err.textContent = '';
+    const pwEl = document.getElementById('submit-pw');
+    if (localStorage.getItem('lw4p_submit_ok') !== '1') {
+      if (!pwEl.value) { err.textContent = t('submit_err_pw'); return; }
+      const hex = await sha256Hex(pwEl.value);
+      if (hex !== SUBMIT_PASSWORD_SHA256) { err.textContent = t('submit_err_pw'); return; }
+      localStorage.setItem('lw4p_submit_ok', '1');
+      document.getElementById('pw-row').style.display = 'none';
+    }
+    const url = document.getElementById('submit-url').value.trim();
+    const m = url.match(SUBMIT_URL_RE);
+    if (!m) { err.textContent = t('submit_err_url'); return; }
+    const note = document.getElementById('submit-note').value.trim();
+    const title = `[壁纸上报] status_${m[3]}`;
+    const body = `链接: ${url}\n备注: ${note || '-'}\n时间: ${new Date().toISOString()}\n来源: ${location.href}\n`;
+    window.open(
+      `https://github.com/t-bites/livewallpaper4phone/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`,
+      '_blank', 'noopener'
+    );
+    window.closeSubmit();
+  }
+
+  const navSubmit = document.getElementById('nav-submit');
+  if (navSubmit) navSubmit.addEventListener('click', e => { e.preventDefault(); window.openSubmit(); });
+  const submitGo = document.getElementById('submit-go');
+  if (submitGo) submitGo.addEventListener('click', doSubmit);
 
   // ========== 教程页渲染 ==========
   function renderTutorials() {

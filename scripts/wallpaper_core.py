@@ -65,3 +65,11 @@ def extract_reply_ids(markdown, screen_name, exclude_id=None):
         if tid != exclude_id and tid not in ids:
             ids.append(tid)
     return ids
+
+
+def split_own_and_borrowed(entries, own_ids):
+    """按自有 media ID 集合把 yt-dlp 条目分为 (own, borrowed)，保持原顺序。"""
+    own, borrowed = [], []
+    for e in entries or []:
+        (own if e.get("id") in own_ids else borrowed).append(e)
+    return own, borrowed

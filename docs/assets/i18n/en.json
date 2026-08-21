@@ -30,24 +30,64 @@
   "tutorial_general_tip": "💡 General method: Save video to gallery → Open in Photos → tap More → Set as Wallpaper → Live Wallpaper → Confirm.",
   "tutorial_iphone": "📱 iPhone (iOS)",
   "tutorial_ios18": "🍎 iOS 18+ Native Setup",
-  "tutorial_ios18_steps": ["Open video on X, long-press → Save to Photos", "Open Settings → Wallpaper → Add New Wallpaper", "Select Live Wallpaper → pick video from Photos", "Adjust position → tap Add"],
+  "tutorial_ios18_steps": [
+    "Open video on X, long-press → Save to Photos",
+    "Open Settings → Wallpaper → Add New Wallpaper",
+    "Select Live Wallpaper → pick video from Photos",
+    "Adjust position → tap Add"
+  ],
   "tutorial_ios16": "🍎 iOS 16-17 Using Shortcuts",
-  "tutorial_ios16_steps": ["Download IntoLive app (free on App Store)", "Save video to Photos → open in IntoLive", "Convert to Live Photo → Save", "Long-press home screen → choose wallpaper → pick Live Photo"],
+  "tutorial_ios16_steps": [
+    "Download IntoLive app (free on App Store)",
+    "Save video to Photos → open in IntoLive",
+    "Convert to Live Photo → Save",
+    "Long-press home screen → choose wallpaper → pick Live Photo"
+  ],
   "tutorial_android": "📱 Android",
   "tutorial_android_generic": "🟢 Universal Method (Android 13+)",
-  "tutorial_android_steps": ["Save video to gallery (long-press on X → Save)", "Open Gallery → find video → tap menu", "Select Set as Wallpaper → Live Wallpaper / Video Wallpaper", "Crop and adjust → confirm"],
+  "tutorial_android_steps": [
+    "Save video to gallery (long-press on X → Save)",
+    "Open Gallery → find video → tap menu",
+    "Select Set as Wallpaper → Live Wallpaper / Video Wallpaper",
+    "Crop and adjust → confirm"
+  ],
   "tutorial_samsung": "📱 Samsung Galaxy ｜ One UI",
-  "tutorial_samsung_steps": ["Install Good Lock → add Wonderland plugin", "Or: Settings → Wallpaper and Style → More wallpapers → Live Wallpaper", "Select Video Wallpaper → pick from gallery", "Adjust → confirm"],
+  "tutorial_samsung_steps": [
+    "Install Good Lock → add Wonderland plugin",
+    "Or: Settings → Wallpaper and Style → More wallpapers → Live Wallpaper",
+    "Select Video Wallpaper → pick from gallery",
+    "Adjust → confirm"
+  ],
   "tutorial_huawei": "📱 Huawei / Honor ｜ HarmonyOS / EMUI",
-  "tutorial_huawei_steps": ["Settings → Wallpaper & Personalization → Wallpaper → Live Wallpaper", "Tap More → pick video from gallery", "Adjust preview → Apply"],
+  "tutorial_huawei_steps": [
+    "Settings → Wallpaper & Personalization → Wallpaper → Live Wallpaper",
+    "Tap More → pick video from gallery",
+    "Adjust preview → Apply"
+  ],
   "tutorial_xiaomi": "📱 Xiaomi / Redmi ｜ HyperOS / MIUI",
-  "tutorial_xiaomi_steps": ["Open video in gallery → tap More → Set as Wallpaper", "Or: Settings → Wallpaper → Live Wallpaper → pick from gallery", "Adjust → confirm"],
+  "tutorial_xiaomi_steps": [
+    "Open video in gallery → tap More → Set as Wallpaper",
+    "Or: Settings → Wallpaper → Live Wallpaper → pick from gallery",
+    "Adjust → confirm"
+  ],
   "tutorial_oppo": "📱 OPPO / OnePlus ｜ ColorOS",
-  "tutorial_oppo_steps": ["Settings → Wallpaper & Personalization → Wallpaper → Live Wallpaper", "Select Video Wallpaper → pick from gallery", "Adjust → Apply"],
+  "tutorial_oppo_steps": [
+    "Settings → Wallpaper & Personalization → Wallpaper → Live Wallpaper",
+    "Select Video Wallpaper → pick from gallery",
+    "Adjust → Apply"
+  ],
   "tutorial_vivo": "📱 vivo / iQOO ｜ Funtouch OS",
-  "tutorial_vivo_steps": ["Open iTheme app → My → Wallpaper → Live Wallpaper", "Select Custom → pick video from gallery", "Adjust → Apply"],
+  "tutorial_vivo_steps": [
+    "Open iTheme app → My → Wallpaper → Live Wallpaper",
+    "Select Custom → pick video from gallery",
+    "Adjust → Apply"
+  ],
   "tutorial_pixel": "📱 Google Pixel ｜ Stock Android",
-  "tutorial_pixel_steps": ["Settings → Wallpaper & Style → More wallpapers", "Select Live Wallpaper → pick from gallery", "Adjust → Set wallpaper"],
+  "tutorial_pixel_steps": [
+    "Settings → Wallpaper & Style → More wallpapers",
+    "Select Live Wallpaper → pick from gallery",
+    "Adjust → Set wallpaper"
+  ],
   "tutorial_faq": "❓ Troubleshooting",
   "tutorial_warning_ratio": "⚠️ Aspect ratio mismatch: wallpaper will be cropped. Use the ratio filter to find wallpapers matching your phone's screen.",
   "tutorial_warning_sound": "⚠️ Video plays without sound: live wallpapers are muted by design.",
@@ -59,5 +99,17 @@
   "tutorial_app_wallpaper_engine_desc": "Paid on App Store. Supports looping video wallpapers, management, and scheduled switching.",
   "tutorial_tip_samsung": "💡 Samsung One UI 6+ natively supports video wallpapers — no third-party app needed.",
   "tutorial_tip_huawei": "💡 Some models need to set via Theme app: Theme → My → Mix & Match → Wallpaper → Live Wallpaper.",
-  "tutorial_tip_xiaomi": "💡 MIUI 14+ has native video wallpaper support. HyperOS supports separate lock screen and home screen wallpapers."
+  "tutorial_tip_xiaomi": "💡 MIUI 14+ has native video wallpaper support. HyperOS supports separate lock screen and home screen wallpapers.",
+  "nav_submit": "Submit",
+  "submit_title": "Submit a Wallpaper",
+  "submit_pw": "Access Password",
+  "submit_pw_ph": "Enter password",
+  "submit_url": "X Post URL",
+  "submit_url_ph": "https://x.com/user/status/...",
+  "submit_note": "Note (optional)",
+  "submit_note_ph": "Additional info…",
+  "submit_go": "Submit",
+  "submit_hint": "You'll be redirected to GitHub to create an Issue",
+  "submit_err_pw": "Wrong password",
+  "submit_err_url": "Please enter a valid X post URL"
 }

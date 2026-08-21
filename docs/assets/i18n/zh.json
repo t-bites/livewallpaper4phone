@@ -30,24 +30,64 @@
   "tutorial_general_tip": "💡 通用方法：保存视频到相册后，在图库中打开 → 点击「更多」→ 「设置为壁纸」→ 选择「动态壁纸」→ 确认。",
   "tutorial_iphone": "📱 iPhone（iOS）",
   "tutorial_ios18": "🍎 iOS 18+ 原生设置",
-  "tutorial_ios18_steps": ["在 X 上打开视频，长按 → 保存到相册", "打开「设置」→「壁纸」→「添加新壁纸」", "选择「动态壁纸」→ 从相册选取视频", "调整位置后点击「添加」"],
+  "tutorial_ios18_steps": [
+    "在 X 上打开视频，长按 → 保存到相册",
+    "打开「设置」→「壁纸」→「添加新壁纸」",
+    "选择「动态壁纸」→ 从相册选取视频",
+    "调整位置后点击「添加」"
+  ],
   "tutorial_ios16": "🍎 iOS 16-17 使用快捷指令",
-  "tutorial_ios16_steps": ["下载「IntoLive」App（App Store 免费）", "保存视频到相册 → 在 IntoLive 中打开", "选择「Live Photo」转换 → 保存", "主屏幕长按 → 选择壁纸 → 选择刚保存的 Live Photo"],
+  "tutorial_ios16_steps": [
+    "下载「IntoLive」App（App Store 免费）",
+    "保存视频到相册 → 在 IntoLive 中打开",
+    "选择「Live Photo」转换 → 保存",
+    "主屏幕长按 → 选择壁纸 → 选择刚保存的 Live Photo"
+  ],
   "tutorial_android": "📱 Android",
   "tutorial_android_generic": "🟢 通用方法（大部分 Android 13+）",
-  "tutorial_android_steps": ["保存视频到相册（X 长按视频 → 保存）", "打开「图库」→ 找到视频 → 点击右上角菜单", "选择「设置为壁纸」→ 「动态壁纸」（或「视频壁纸」）", "裁剪调整 → 确认"],
+  "tutorial_android_steps": [
+    "保存视频到相册（X 长按视频 → 保存）",
+    "打开「图库」→ 找到视频 → 点击右上角菜单",
+    "选择「设置为壁纸」→ 「动态壁纸」（或「视频壁纸」）",
+    "裁剪调整 → 确认"
+  ],
   "tutorial_samsung": "📱 三星 Galaxy ｜ One UI",
-  "tutorial_samsung_steps": ["安装「Good Lock」→ 安装「Wonderland」插件", "或直接：设置 → 壁纸和风格 → 更多壁纸 → 动态壁纸", "选择「视频壁纸」→ 从相册选取视频", "调整后确认"],
+  "tutorial_samsung_steps": [
+    "安装「Good Lock」→ 安装「Wonderland」插件",
+    "或直接：设置 → 壁纸和风格 → 更多壁纸 → 动态壁纸",
+    "选择「视频壁纸」→ 从相册选取视频",
+    "调整后确认"
+  ],
   "tutorial_huawei": "📱 华为 / 荣耀 ｜ HarmonyOS / EMUI",
-  "tutorial_huawei_steps": ["设置 → 壁纸和个性化 → 壁纸 → 动态壁纸", "点击「更多」→ 从相册选取视频", "调整预览 → 应用"],
+  "tutorial_huawei_steps": [
+    "设置 → 壁纸和个性化 → 壁纸 → 动态壁纸",
+    "点击「更多」→ 从相册选取视频",
+    "调整预览 → 应用"
+  ],
   "tutorial_xiaomi": "📱 小米 / 红米 ｜ HyperOS / MIUI",
-  "tutorial_xiaomi_steps": ["相册中打开视频 → 点击底部「更多」→ 「设置为壁纸」", "或：设置 → 壁纸 → 动态壁纸 → 从相册选择", "调整后确认"],
+  "tutorial_xiaomi_steps": [
+    "相册中打开视频 → 点击底部「更多」→ 「设置为壁纸」",
+    "或：设置 → 壁纸 → 动态壁纸 → 从相册选择",
+    "调整后确认"
+  ],
   "tutorial_oppo": "📱 OPPO / 一加 ｜ ColorOS",
-  "tutorial_oppo_steps": ["设置 → 壁纸和个性化 → 壁纸 → 动态壁纸", "选择「视频壁纸」→ 从相册选取", "调整 → 应用"],
+  "tutorial_oppo_steps": [
+    "设置 → 壁纸和个性化 → 壁纸 → 动态壁纸",
+    "选择「视频壁纸」→ 从相册选取",
+    "调整 → 应用"
+  ],
   "tutorial_vivo": "📱 vivo / iQOO ｜ Funtouch OS",
-  "tutorial_vivo_steps": ["打开「i主题」App → 我的 → 壁纸 → 动态壁纸", "选择「自定义」→ 从相册选取视频", "调整 → 应用"],
+  "tutorial_vivo_steps": [
+    "打开「i主题」App → 我的 → 壁纸 → 动态壁纸",
+    "选择「自定义」→ 从相册选取视频",
+    "调整 → 应用"
+  ],
   "tutorial_pixel": "📱 Google Pixel ｜ 原生 Android",
-  "tutorial_pixel_steps": ["设置 → 壁纸和样式 → 更多壁纸", "选择「动态壁纸」→ 从相册选取", "调整 → 设置壁纸"],
+  "tutorial_pixel_steps": [
+    "设置 → 壁纸和样式 → 更多壁纸",
+    "选择「动态壁纸」→ 从相册选取",
+    "调整 → 设置壁纸"
+  ],
   "tutorial_faq": "❓ 遇到问题？",
   "tutorial_warning_ratio": "⚠️ 视频比例不匹配：壁纸会被裁剪填充。建议选择与手机屏幕比例接近的壁纸（使用站内比例筛选功能）。",
   "tutorial_warning_sound": "⚠️ 视频自动播放无声音：动态壁纸默认静音，这是正常设计。",
@@ -59,5 +99,17 @@
   "tutorial_app_wallpaper_engine_desc": "App Store 付费。支持视频循环播放、动态壁纸管理与定时切换。",
   "tutorial_tip_samsung": "💡 三星 One UI 6+ 原生支持视频壁纸，无需第三方 App。",
   "tutorial_tip_huawei": "💡 部分机型需在「主题」App 中设置：主题 → 我的 → 混搭 → 壁纸 → 动态壁纸。",
-  "tutorial_tip_xiaomi": "💡 MIUI 14+ 原生视频壁纸支持。HyperOS 支持锁屏与主屏分别设置。"
+  "tutorial_tip_xiaomi": "💡 MIUI 14+ 原生视频壁纸支持。HyperOS 支持锁屏与主屏分别设置。",
+  "nav_submit": "提交壁纸",
+  "submit_title": "提交壁纸",
+  "submit_pw": "访问密码",
+  "submit_pw_ph": "输入访问密码",
+  "submit_url": "X 帖子链接",
+  "submit_url_ph": "https://x.com/user/status/...",
+  "submit_note": "备注（可选）",
+  "submit_note_ph": "补充说明…",
+  "submit_go": "提交",
+  "submit_hint": "提交后将跳转 GitHub 创建 Issue，由维护者收录",
+  "submit_err_pw": "密码错误",
+  "submit_err_url": "请输入有效的 X 帖子链接"
 }

@@ -216,6 +216,19 @@ header .stats { font-size: 12px; color: var(--text-muted); }
 .modal-body .download-btn:hover { background: var(--accent-hover); }
 .modal-body .download-hint { font-size: 11px; color: var(--text-muted); text-align: center; }
 
+/* 上报弹窗 */
+.submit-modal { width: min(420px, 94vw); display: block; }
+.submit-body h2 { margin-bottom: 14px; }
+.submit-body input, .submit-body textarea {
+  width: 100%; background: #1e1e1e; color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 10px; font-size: 13px; margin-bottom: 10px; outline: none;
+  font-family: inherit; resize: vertical;
+}
+.submit-body input:focus, .submit-body textarea:focus { border-color: var(--accent); }
+.form-label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.form-error { color: #ff7675; font-size: 12px; min-height: 16px; margin-bottom: 6px; }
+
 /* 响应式 */
 @media (max-width: 899px) {
   .modal { flex-direction: column; width: 100%; max-height: 90vh; overflow-y: auto; }

@@ -14,6 +14,7 @@
   <nav>
     <a href="index.html" class="active">壁纸</a>
     <a href="tutorials.html">设置教程</a>
+    <a href="#" id="nav-submit">提交壁纸</a>
   </nav>
   <span class="stats" id="stats"></span>
 </header>
@@ -41,6 +42,27 @@
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-video" id="modal-video"></div>
     <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- 上报弹窗 -->
+<div class="modal-overlay" id="submit-modal" style="display:none" onclick="closeSubmit(event)">
+  <div class="modal submit-modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeSubmit()">✕</button>
+    <div class="modal-body submit-body">
+      <h2 id="submit-title"></h2>
+      <div id="pw-row">
+        <label class="form-label" id="label-pw"></label>
+        <input type="password" id="submit-pw" autocomplete="off">
+      </div>
+      <label class="form-label" id="label-url"></label>
+      <input type="url" id="submit-url">
+      <label class="form-label" id="label-note"></label>
+      <textarea id="submit-note" rows="2"></textarea>
+      <div class="form-error" id="submit-error"></div>
+      <button class="download-btn" id="submit-go"></button>
+      <div class="download-hint" id="submit-hint"></div>
+    </div>
   </div>
 </div>
 

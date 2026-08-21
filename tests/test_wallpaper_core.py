@@ -1,6 +1,7 @@
 import unittest
 from wallpaper_core import (select_video, dedupe_by_id, status_id_from_url,
-                            parse_issue_status_ids, extract_reply_ids)
+                            parse_issue_status_ids, extract_reply_ids,
+                            split_own_and_borrowed)
 
 E1 = {"id": "111", "width": 720}
 E2 = {"id": "222", "width": 1080}
@@ -87,6 +88,23 @@ class TestReplyIds(unittest.TestCase):
 
     def test_other_author_ignored(self):
         self.assertEqual(extract_reply_ids(self.MD, "other", exclude_id="100"), ["300"])
+
+
+class TestSplitOwnBorrowed(unittest.TestCase):
+    def test_splits_preserving_order(self):
+        entries = [{"id": "a"}, {"id": "b"}, {"id": "c"}]
+        own, borrowed = split_own_and_borrowed(entries, {"b"})
+        self.assertEqual([e["id"] for e in own], ["b"])
+        self.assertEqual([e["id"] for e in borrowed], ["a", "c"])
+
+    def test_no_own_ids(self):
+        own, borrowed = split_own_and_borrowed([{"id": "a"}], set())
+        self.assertEqual(own, [])
+        self.assertEqual([e["id"] for e in borrowed], ["a"])
+
+    def test_empty_entries(self):
+        self.assertEqual(split_own_and_borrowed([], {"a"}), ([], []))
+        self.assertEqual(split_own_and_borrowed(None, {"a"}), ([], []))
 
 
 if __name__ == "__main__":
