@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """collect_wallpapers.py — 壁纸元数据采集+自动分类+增量合并
 模式1: 从 TWEETS 配置提取（每帖按 keep 只保留一个真壁纸视频）
-模式2: --from-issues 从 GitHub issue 拉取用户上报的帖子
+模式2: --url 直接采集指定帖子（可多次传入，自动去重）
+模式3: --from-issues 从 GitHub issue 拉取用户上报的帖子
 输出: docs/assets/data/wallpapers.json（含本地化缩略图 docs/assets/thumbs/）
 
 用法:
   python scripts/collect_wallpapers.py                 # 按配置批量采集
   python scripts/collect_wallpapers.py --fresh         # 忽略已有数据全量重建
+  python scripts/collect_wallpapers.py --url <x链接> [--url ...]  # 追加采集指定帖
   python scripts/collect_wallpapers.py --from-issues   # 合并处理 GitHub 上报 issue
   python scripts/collect_wallpapers.py --dry-run       # 只打印计划不写文件
 """
@@ -15,7 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import requests
-from wallpaper_core import select_video, dedupe_by_id, parse_issue_status_ids, split_own_and_borrowed
+from wallpaper_core import select_video, dedupe_by_id, parse_issue_status_ids, split_own_and_borrowed, status_id_from_url
 
 BASE = Path(__file__).resolve().parent.parent
 OUT = BASE / "docs" / "assets" / "data" / "wallpapers.json"
@@ -247,7 +249,7 @@ def close_issue(number):
 # ========== 主流程 ==========
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--url", help="单帖采集")
+    ap.add_argument("--url", action="append", default=[], help="直接采集 X 帖子链接（可多次传入，自动去重）")
     ap.add_argument("--from-issues", action="store_true", help="拉取 GitHub 上报 issue 并入队列")
     ap.add_argument("--no-auto-close", action="store_true", help="--from-issues 时采集成功后不关闭 issue")
     ap.add_argument("--fresh", action="store_true", help="忽略已有 wallpapers.json 全量重建")
@@ -256,6 +258,19 @@ def main():
 
     queue = [(t["author"], t["id"]) for t in TWEETS]
     issue_map = {}
+    known_ids = {tid for _, tid in queue}
+    for u in args.url:
+        sid = status_id_from_url(u)
+        if not sid:
+            print(f"⚠️ 无法从 URL 解析帖子 ID，跳过: {u}")
+            continue
+        if sid in known_ids:
+            print(f"⏭️ 帖子已在队列，跳过: {sid}")
+            continue
+        known_ids.add(sid)
+        m = re.search(r"(?:x|twitter)\.com/([A-Za-z0-9_]{1,15})/status/", u)
+        queue.append((m.group(1) if m else "", sid))
+        print(f"➕ 追加采集: {m.group(1) if m else '(作者待抓取)'} ({sid})")
     if args.from_issues:
         issues = fetch_issues()
         reported = parse_issue_status_ids(issues)
@@ -301,7 +316,7 @@ def main():
         primary_id = group_entries[1]["id"] if len(group_entries) > 1 else group_entries[0]["id"]
         for e in group_entries:
             real_author = author
-            if author.startswith("@issue"):  # issue 上报帖：用 yt-dlp 的真实作者名
+            if not author or author.startswith("@issue"):  # 无 handle 时用 yt-dlp 的真实作者名
                 real_author = e.get("uploader") or "unknown"
             item = build_item(e, real_author, url)
             item["group"] = tid
