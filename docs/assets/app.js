@@ -96,19 +96,17 @@
     if (isTutorialsPage) return;
 
     // Stats
-    if (stats) stats.textContent = t('stats_template', { count: wallpapers.length });
+    if (stats) stats.textContent = t('stats_template', { count: getPrimaries().length });
 
     // Filter labels
     const filterLabels = document.querySelectorAll('#filters label');
-    const labels = [t('filter_ar'), t('filter_quality'), t('filter_style'), t('filter_source'), t('filter_prompt')];
+    const labels = [t('filter_ar'), t('filter_quality'), t('filter_style'), t('filter_source')];
     filterLabels.forEach((label, i) => { if (labels[i]) label.textContent = labels[i]; });
 
     // Filter options
     document.querySelectorAll('#filters select option[value=""]').forEach(opt => {
       opt.textContent = t('filter_all');
     });
-    document.querySelector('#filter-prompt option[value="yes"]').textContent = t('filter_prompt_has');
-    document.querySelector('#filter-prompt option[value="no"]').textContent = t('filter_prompt_none');
 
     // Search placeholder
     if (searchInput) searchInput.placeholder = t('search_placeholder');
@@ -138,7 +136,7 @@
       if (loading) loading.style.display = 'none';
       initFilters();
       applyFilters();
-      if (stats) stats.textContent = t('stats_template', { count: wallpapers.length });
+      if (stats) stats.textContent = t('stats_template', { count: getPrimaries().length });
     } catch(e) {
       if (loading) loading.innerHTML = t('load_error');
       console.error(e);
@@ -153,9 +151,14 @@
   }
 
   // ========== 筛选器初始化 ==========
+  function getPrimaries() {
+    return wallpapers.filter(w => w.is_primary);
+  }
+
   function initFilters() {
+    const primaries = getPrimaries();
     const ars = new Set, quals = new Set, styles = new Set, sources = new Set;
-    wallpapers.forEach(w => {
+    primaries.forEach(w => {
       ars.add(w.aspect_ratio);
       quals.add(w.quality);
       (w.tags || []).forEach(t => styles.add(t));
@@ -170,8 +173,7 @@
       ar: document.getElementById('filter-ar'),
       quality: document.getElementById('filter-quality'),
       style: document.getElementById('filter-style'),
-      source: document.getElementById('filter-source'),
-      prompt: document.getElementById('filter-prompt')
+      source: document.getElementById('filter-source')
     }).forEach(el => el.addEventListener('change', applyFilters));
     if (searchInput) searchInput.addEventListener('input', applyFilters);
     const clearBtn = document.getElementById('clear-all');
@@ -200,16 +202,14 @@
     const quality = document.getElementById('filter-quality').value;
     const style = document.getElementById('filter-style').value;
     const source = document.getElementById('filter-source').value;
-    const prompt = document.getElementById('filter-prompt').value;
     const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    const primaries = getPrimaries();
 
-    filtered = wallpapers.filter(w => {
+    filtered = primaries.filter(w => {
       if (ar && w.aspect_ratio !== ar) return false;
       if (quality && w.quality !== quality) return false;
       if (style && !(w.tags || []).includes(style)) return false;
       if (source && w.source !== source) return false;
-      if (prompt === 'yes' && !w.prompt) return false;
-      if (prompt === 'no' && w.prompt) return false;
       if (query) {
         const inTitle = (w.title || '').toLowerCase().includes(query);
         const inTags = (w.tags || []).join(' ').toLowerCase().includes(query);
@@ -220,7 +220,7 @@
       return true;
     });
     renderGrid();
-    if (resultCount) resultCount.textContent = t('result_count', { filtered: filtered.length, total: wallpapers.length });
+    if (resultCount) resultCount.textContent = t('result_count', { filtered: filtered.length, total: primaries.length });
   }
 
   // ========== 视频加载（fetch→blob，绕过 Referer 限制）==========
@@ -244,10 +244,16 @@
       grid.innerHTML = `<div class="no-results"><p>${t('no_results_title')}</p><p>${t('no_results_hint')}</p></div>`;
       return;
     }
+    // 组内视频数（用于角标）
+    const groupSize = {};
+    filtered.forEach(w => { groupSize[w.group] = (groupSize[w.group] || 0) + 1; });
+
     grid.innerHTML = filtered.map((w, i) => `
       <div class="wallpaper-card" data-idx="${i}" onclick="window.openModal(${i})" data-id="${w.id}">
         <div class="video-placeholder" style="width:100%;height:100%;background:#000;position:relative;">
+          ${w.thumb ? `<img class="thumb" src="${w.thumb}" alt="" loading="lazy">` : ''}
           <div class="quality-badge">${w.quality||'HD'}</div>
+          ${groupSize[w.group] > 1 ? `<div class="multi-badge">▤ ${groupSize[w.group]}</div>` : ''}
           <div class="loading-icon">▶</div>
         </div>
         <div class="overlay">
@@ -295,15 +301,34 @@
     });
   }
 
-  // ========== 详情弹窗 ==========
+  // ========== 详情弹窗（组内可切换视频）==========
+  let modalSiblings = [];
+  let modalPos = 0;
+
   window.openModal = async function(idx) {
     const w = filtered[idx];
     if (!w) return;
+    modalSiblings = wallpapers.filter(x => x.group === w.group);
+    modalPos = Math.max(0, modalSiblings.findIndex(x => x.id === w.id));
+    renderModal();
+    modal.style.display = 'flex';
+  };
+
+  function renderModal() {
+    const w = modalSiblings[modalPos];
+    if (!w) return;
+    const multi = modalSiblings.length > 1;
+
+    modalVideo.innerHTML = `
+      ${multi ? `<button class="modal-nav prev" onclick="window.modalNav(-1)">‹</button>` : ''}
+      <div class="modal-video-loading"><div class="spinner"></div></div>
+      ${multi ? `<button class="modal-nav next" onclick="window.modalNav(1)">›</button>` : ''}
+      <div class="modal-counter">${multi ? `${modalPos + 1} / ${modalSiblings.length}` : ''}</div>
+    `;
+    loadModalVideo(w);
 
     const downloadUrl = w.tweet_url || '#';
     const videoUrl = w.video_url || '';
-
-    modalVideo.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><div class="spinner"></div><span style="margin-left:8px">加载中...</span></div>`;
     modalBody.innerHTML = `
       <h2>${escapeHtml(w.title || '')}</h2>
       <div class="meta">
@@ -332,16 +357,51 @@
       <div class="download-hint">${t('modal_download_hint')}</div>
       <a class="download-btn" style="background:var(--border);margin-top:6px;font-size:12px" href="${downloadUrl}" target="_blank" rel="noopener">${t('modal_view_x')}</a>
     `;
-    modal.style.display = 'flex';
+  }
 
-    if (videoUrl) {
-      const blobUrl = await loadVideoBlob(videoUrl);
-      if (blobUrl) {
-        modalVideo.innerHTML = `<video src="${blobUrl}" autoplay loop muted playsinline controls style="max-width:100%;max-height:500px;border-radius:8px;"></video>`;
-      } else {
-        modalVideo.innerHTML = `<div style="color:red;padding:20px;text-align:center">视频加载失败</div>`;
-      }
+  async function loadModalVideo(w) {
+    const videoUrl = w.video_url || '';
+    if (!videoUrl) {
+      modalVideo.innerHTML = `<div style="color:red;padding:20px;text-align:center">视频加载失败</div>`;
+      return;
     }
+    const blobUrl = await loadVideoBlob(videoUrl);
+    // 切换后可能已不是当前应显示的视频
+    if (modalSiblings[modalPos] && modalSiblings[modalPos].id !== w.id) return;
+    if (blobUrl) {
+      const old = modalVideo.querySelector('video');
+      if (old) old.remove();
+      const vid = document.createElement('video');
+      vid.src = blobUrl;
+      vid.autoplay = true;
+      vid.loop = true;
+      vid.muted = true;
+      vid.playsInline = true;
+      vid.controls = true;
+      if (w.thumb) vid.poster = w.thumb;
+      modalVideo.appendChild(vid);
+      modalVideo.querySelector('.modal-video-loading')?.remove();
+    } else {
+      modalVideo.querySelector('.modal-video-loading')?.remove();
+      const err = document.createElement('div');
+      err.style.cssText = 'color:red;padding:20px;text-align:center';
+      err.textContent = '视频加载失败';
+      modalVideo.appendChild(err);
+    }
+  }
+
+  window.modalNav = function(dir) {
+    if (modalSiblings.length < 2) return;
+    modalPos = (modalPos + dir + modalSiblings.length) % modalSiblings.length;
+    renderModal();
+  };
+
+  window.closeModal = function(e) {
+    if (e && e.target !== e.currentTarget) return;
+    modal.style.display = 'none';
+    modalVideo.innerHTML = '';
+    modalBody.innerHTML = '';
+    modalSiblings = [];
   };
 
   window.closeModal = function(e) {

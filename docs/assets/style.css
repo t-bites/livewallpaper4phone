@@ -110,6 +110,19 @@ header .stats { font-size: 12px; color: var(--text-muted); }
 }
 .wallpaper-card .overlay .author span { color: var(--accent); }
 
+/* 网格缩略图与多视频角标 */
+.video-placeholder .thumb {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.multi-badge {
+  position: absolute; top: 6px; left: 6px;
+  font-size: 10px; padding: 2px 7px;
+  border-radius: 4px; background: rgba(0,0,0,0.65);
+  color: #fff; font-weight: 600;
+}
+
 /* 无结果 */
 .no-results {
   grid-column: 1 / -1;
@@ -119,7 +132,7 @@ header .stats { font-size: 12px; color: var(--text-muted); }
 }
 .no-results p { font-size: 16px; margin-bottom: 8px; }
 
-/* 详情弹窗 */
+/* 详情弹窗 —— 桌面左右分栏 */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,0.85);
@@ -129,9 +142,11 @@ header .stats { font-size: 12px; color: var(--text-muted); }
 .modal {
   background: var(--card-bg);
   border-radius: 16px;
-  max-width: 600px; width: 100%;
-  max-height: 90vh; overflow-y: auto;
+  width: min(1100px, 92vw);
+  max-height: 92vh;
+  overflow: hidden;
   position: relative;
+  display: flex;
 }
 .modal-close {
   position: absolute; top: 12px; right: 12px; z-index: 10;
@@ -140,9 +155,40 @@ header .stats { font-size: 12px; color: var(--text-muted); }
   cursor: pointer; font-size: 18px;
   display: flex; align-items: center; justify-content: center;
 }
-.modal-video { width: 100%; aspect-ratio: 9/16; background: #000; }
+.modal-video {
+  flex: 1 1 auto; min-width: 0;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  height: min(82vh, 88vh);
+}
 .modal-video video { width: 100%; height: 100%; object-fit: contain; }
-.modal-body { padding: 16px 20px 20px; }
+.modal-video-loading {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(0,0,0,0.55); border: none; color: #fff;
+  font-size: 24px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: 0.2s;
+}
+.modal-nav:hover { background: var(--accent); }
+.modal-nav.prev { left: 12px; }
+.modal-nav.next { right: 12px; }
+.modal-counter {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 5;
+  background: rgba(0,0,0,0.55); color: #fff;
+  font-size: 12px; padding: 3px 10px; border-radius: 10px;
+}
+.modal-body {
+  width: 380px; flex: 0 0 380px;
+  max-height: 92vh; overflow-y: auto;
+  border-left: 1px solid var(--border);
+  padding: 20px;
+}
 .modal-body h2 { font-size: 16px; margin-bottom: 8px; }
 .modal-body .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .modal-body .meta span { 
@@ -171,6 +217,11 @@ header .stats { font-size: 12px; color: var(--text-muted); }
 .modal-body .download-hint { font-size: 11px; color: var(--text-muted); text-align: center; }
 
 /* 响应式 */
+@media (max-width: 899px) {
+  .modal { flex-direction: column; width: 100%; max-height: 90vh; overflow-y: auto; }
+  .modal-video { flex: none; height: auto; aspect-ratio: 9/16; max-height: 55vh; }
+  .modal-body { flex: none; width: 100%; max-height: none; border-left: none; border-top: 1px solid var(--border); padding: 16px; }
+}
 @media (max-width: 600px) {
   .wallpaper-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
   .filters { padding: 8px 12px; }
