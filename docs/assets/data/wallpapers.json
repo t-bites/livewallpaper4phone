@@ -1,38 +1,12 @@
 [
  {
-  "id": "2089982396909367296",
-  "title": "夏一跳 - 花16块钱做的手机动态壁纸 免费送给你们了 右边是原视频，拿去用吧 想自己生成的，提示词在评论区 猫的品种可以自己替换 #1",
-  "author": "xiayitiaoAI",
-  "author_url": "https://x.com/xiayitiaoAI",
-  "tweet_url": "https://x.com/i/status/2089983524397007194",
-  "video_url": "https://video.twimg.com/amplify_video/2089982396909367296/vid/avc1/720x1280/T34JkcLKK7aFFloe.mp4?tag=29",
-  "width": 720,
-  "height": 1280,
-  "aspect_ratio": "9:16",
-  "quality": "FHD",
-  "duration": 8.095,
-  "tags": [
-   "猫",
-   "AI生成",
-   "AI生成"
-  ],
-  "prompt": "在评论区 猫的品种可以自己替换 #1",
-  "prompt_source": "tweet",
-  "source": "xiayitiaoAI",
-  "phone_types": [
-   "iPhone 6/7/8/SE",
-   "Samsung A系列",
-   "通用"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
   "id": "2089982426051448832",
   "title": "夏一跳 - 花16块钱做的手机动态壁纸 免费送给你们了 右边是原视频，拿去用吧 想自己生成的，提示词在评论区 猫的品种可以自己替换 #2",
   "author": "xiayitiaoAI",
   "author_url": "https://x.com/xiayitiaoAI",
   "tweet_url": "https://x.com/i/status/2089983524397007194",
   "video_url": "https://video.twimg.com/amplify_video/2089982426051448832/vid/avc1/720x1280/HZxvvcPxdEgO6T2N.mp4?tag=29",
+  "thumb": "assets/thumbs/2089982426051448832.jpg",
   "width": 720,
   "height": 1280,
   "aspect_ratio": "9:16",
@@ -54,35 +28,13 @@
   "collected_at": "2026-08-21"
  },
  {
-  "id": "2090330860704993280",
-  "title": "aestheticz_hub - Cute Pikachu 4K Live Wallpaper! 💛 #1",
-  "author": "aestheticz_hub",
-  "author_url": "https://x.com/aestheticz_hub",
-  "tweet_url": "https://x.com/i/status/2090330911497961531",
-  "video_url": "https://video.twimg.com/amplify_video/2090330860704993280/vid/avc1/1200x1600/lUndr_930UOvp2Uk.mp4?tag=29",
-  "width": 1200,
-  "height": 1600,
-  "aspect_ratio": "1200:1600",
-  "quality": "2K",
-  "duration": 6.153,
-  "tags": [
-   "皮卡丘"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "aestheticz_hub",
-  "phone_types": [
-   "通用"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
   "id": "2090330883454898176",
   "title": "aestheticz_hub - Cute Pikachu 4K Live Wallpaper! 💛 #2",
   "author": "aestheticz_hub",
   "author_url": "https://x.com/aestheticz_hub",
   "tweet_url": "https://x.com/i/status/2090330911497961531",
   "video_url": "https://video.twimg.com/amplify_video/2090330883454898176/vid/avc1/1080x1920/zhgXvagLPcafq3Od.mp4?tag=29",
+  "thumb": "assets/thumbs/2090330883454898176.jpg",
   "width": 1080,
   "height": 1920,
   "aspect_ratio": "9:16",
@@ -102,35 +54,13 @@
   "collected_at": "2026-08-21"
  },
  {
-  "id": "2090124380051529728",
-  "title": "Aesthetics Walls 𝕏 - Cute Pikachu 4K Live Wallpaper! 💛 #1",
-  "author": "Aesthetics_Walls",
-  "author_url": "https://x.com/Aesthetics_Walls",
-  "tweet_url": "https://x.com/i/status/2090124422149710067",
-  "video_url": "https://video.twimg.com/amplify_video/2090124380051529728/vid/avc1/2160x2880/M1ASz0MoFBBdYAer.mp4?tag=29",
-  "width": 2160,
-  "height": 2880,
-  "aspect_ratio": "2160:2880",
-  "quality": "4K",
-  "duration": 6.142,
-  "tags": [
-   "皮卡丘"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Aesthetics_Walls",
-  "phone_types": [
-   "通用"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
   "id": "2090124380139622400",
   "title": "Aesthetics Walls 𝕏 - Cute Pikachu 4K Live Wallpaper! 💛 #2",
   "author": "Aesthetics_Walls",
   "author_url": "https://x.com/Aesthetics_Walls",
   "tweet_url": "https://x.com/i/status/2090124422149710067",
   "video_url": "https://video.twimg.com/amplify_video/2090124380139622400/vid/avc1/1080x1920/RuGg0uddkf7JssbO.mp4?tag=29",
+  "thumb": "assets/thumbs/2090124380139622400.jpg",
   "width": 1080,
   "height": 1920,
   "aspect_ratio": "9:16",
@@ -150,35 +80,13 @@
   "collected_at": "2026-08-21"
  },
  {
-  "id": "2090346605945700354",
-  "title": "Unique Wallpaper - Live wallpaper #1",
-  "author": "Unique Wallpaper",
-  "author_url": "https://x.com/Unique",
-  "tweet_url": "https://x.com/i/status/2090346670672208085",
-  "video_url": "https://video.twimg.com/amplify_video/2090346605945700354/vid/avc1/1440x1440/_JuoI_Sg8LIJJFnO.mp4?tag=29",
-  "width": 1440,
-  "height": 1440,
-  "aspect_ratio": "1:1",
-  "quality": "2K",
-  "duration": 10.266,
-  "tags": [
-   "其他"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Unique Wallpaper",
-  "phone_types": [
-   "通用（方形裁剪）"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
   "id": "2090346605958340608",
   "title": "Unique Wallpaper - Live wallpaper #2",
   "author": "Unique Wallpaper",
   "author_url": "https://x.com/Unique",
   "tweet_url": "https://x.com/i/status/2090346670672208085",
   "video_url": "https://video.twimg.com/amplify_video/2090346605958340608/vid/avc1/720x1280/e-ul0VQW1XBGWN84.mp4?tag=29",
+  "thumb": "assets/thumbs/2090346605958340608.jpg",
   "width": 720,
   "height": 1280,
   "aspect_ratio": "9:16",
@@ -198,131 +106,13 @@
   "collected_at": "2026-08-21"
  },
  {
-  "id": "2090339872997359616",
-  "title": "Unique Wallpaper - Live wallpaper #3",
-  "author": "Unique Wallpaper",
-  "author_url": "https://x.com/Unique",
-  "tweet_url": "https://x.com/i/status/2090346670672208085",
-  "video_url": "https://video.twimg.com/amplify_video/2090339872997359616/vid/avc1/1080x1080/8zsiO_WpRq_zRdf3.mp4?tag=29",
-  "width": 1080,
-  "height": 1080,
-  "aspect_ratio": "1:1",
-  "quality": "FHD",
-  "duration": 10.0,
-  "tags": [
-   "其他"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Unique Wallpaper",
-  "phone_types": [
-   "通用（方形裁剪）"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
-  "id": "2090339873039187969",
-  "title": "Unique Wallpaper - Live wallpaper #4",
-  "author": "Unique Wallpaper",
-  "author_url": "https://x.com/Unique",
-  "tweet_url": "https://x.com/i/status/2090346670672208085",
-  "video_url": "https://video.twimg.com/amplify_video/2090339873039187969/vid/avc1/720x1280/sxzVJPIbNS2k56w9.mp4?tag=29",
-  "width": 720,
-  "height": 1280,
-  "aspect_ratio": "9:16",
-  "quality": "FHD",
-  "duration": 10.0,
-  "tags": [
-   "其他"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Unique Wallpaper",
-  "phone_types": [
-   "iPhone 6/7/8/SE",
-   "Samsung A系列",
-   "通用"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
-  "id": "2090339872997359616",
-  "title": "Unique Wallpaper - Live wallpaper #1",
-  "author": "Unique Wallpaper",
-  "author_url": "https://x.com/Unique",
-  "tweet_url": "https://x.com/i/status/2090339921307267203",
-  "video_url": "https://video.twimg.com/amplify_video/2090339872997359616/vid/avc1/1080x1080/8zsiO_WpRq_zRdf3.mp4?tag=29",
-  "width": 1080,
-  "height": 1080,
-  "aspect_ratio": "1:1",
-  "quality": "FHD",
-  "duration": 10.0,
-  "tags": [
-   "其他"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Unique Wallpaper",
-  "phone_types": [
-   "通用（方形裁剪）"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
   "id": "2090339873039187969",
   "title": "Unique Wallpaper - Live wallpaper #2",
   "author": "Unique Wallpaper",
   "author_url": "https://x.com/Unique",
   "tweet_url": "https://x.com/i/status/2090339921307267203",
   "video_url": "https://video.twimg.com/amplify_video/2090339873039187969/vid/avc1/720x1280/sxzVJPIbNS2k56w9.mp4?tag=29",
-  "width": 720,
-  "height": 1280,
-  "aspect_ratio": "9:16",
-  "quality": "FHD",
-  "duration": 10.0,
-  "tags": [
-   "其他"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Unique Wallpaper",
-  "phone_types": [
-   "iPhone 6/7/8/SE",
-   "Samsung A系列",
-   "通用"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
-  "id": "2090339082505183232",
-  "title": "Unique Wallpaper - Live wallpaper #3",
-  "author": "Unique Wallpaper",
-  "author_url": "https://x.com/Unique",
-  "tweet_url": "https://x.com/i/status/2090339921307267203",
-  "video_url": "https://video.twimg.com/amplify_video/2090339082505183232/vid/avc1/1080x1080/qImCjWjfXHs89OVW.mp4?tag=29",
-  "width": 1080,
-  "height": 1080,
-  "aspect_ratio": "1:1",
-  "quality": "FHD",
-  "duration": 10.0,
-  "tags": [
-   "其他"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Unique Wallpaper",
-  "phone_types": [
-   "通用（方形裁剪）"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
-  "id": "2090339082488393728",
-  "title": "Unique Wallpaper - Live wallpaper #4",
-  "author": "Unique Wallpaper",
-  "author_url": "https://x.com/Unique",
-  "tweet_url": "https://x.com/i/status/2090339921307267203",
-  "video_url": "https://video.twimg.com/amplify_video/2090339082488393728/vid/avc1/720x1280/q9xNNtXeGOt3fWXv.mp4?tag=29",
+  "thumb": "assets/thumbs/2090339873039187969.jpg",
   "width": 720,
   "height": 1280,
   "aspect_ratio": "9:16",
@@ -348,61 +138,12 @@
   "author_url": "https://x.com/Edimakor",
   "tweet_url": "https://x.com/i/status/2090272078054527409",
   "video_url": "https://video.twimg.com/amplify_video/2090272021754388480/vid/avc1/720x1280/CtzuRsy3iVt4IXT7.mp4?tag=14",
+  "thumb": "assets/thumbs/2090272021754388480.jpg",
   "width": 720,
   "height": 1280,
   "aspect_ratio": "9:16",
   "quality": "FHD",
   "duration": 9.5,
-  "tags": [
-   "AI生成"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Edimakor Taiwan",
-  "phone_types": [
-   "iPhone 6/7/8/SE",
-   "Samsung A系列",
-   "通用"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
-  "id": "2089982396909367296",
-  "title": "Edimakor Taiwan - 這個創意真的太犯規了 😂🐱 忍不住用 Edimakor 的 MiniMax H3 文生影片直接復刻了一版！ 你要不要也來試試？https:... #2",
-  "author": "Edimakor Taiwan",
-  "author_url": "https://x.com/Edimakor",
-  "tweet_url": "https://x.com/i/status/2090272078054527409",
-  "video_url": "https://video.twimg.com/amplify_video/2089982396909367296/vid/avc1/720x1280/T34JkcLKK7aFFloe.mp4?tag=29",
-  "width": 720,
-  "height": 1280,
-  "aspect_ratio": "9:16",
-  "quality": "FHD",
-  "duration": 8.095,
-  "tags": [
-   "AI生成"
-  ],
-  "prompt": null,
-  "prompt_source": "unknown",
-  "source": "Edimakor Taiwan",
-  "phone_types": [
-   "iPhone 6/7/8/SE",
-   "Samsung A系列",
-   "通用"
-  ],
-  "collected_at": "2026-08-21"
- },
- {
-  "id": "2089982426051448832",
-  "title": "Edimakor Taiwan - 這個創意真的太犯規了 😂🐱 忍不住用 Edimakor 的 MiniMax H3 文生影片直接復刻了一版！ 你要不要也來試試？https:... #3",
-  "author": "Edimakor Taiwan",
-  "author_url": "https://x.com/Edimakor",
-  "tweet_url": "https://x.com/i/status/2090272078054527409",
-  "video_url": "https://video.twimg.com/amplify_video/2089982426051448832/vid/avc1/720x1280/HZxvvcPxdEgO6T2N.mp4?tag=29",
-  "width": 720,
-  "height": 1280,
-  "aspect_ratio": "9:16",
-  "quality": "FHD",
-  "duration": 8.063,
   "tags": [
    "AI生成"
   ],
@@ -423,6 +164,7 @@
   "author_url": "https://x.com/11:11",
   "tweet_url": "https://x.com/i/status/2090099632810647930",
   "video_url": "https://video.twimg.com/amplify_video/2090099602653577217/vid/avc1/720x1280/YROPVN5SDAdUnIcN.mp4?tag=29",
+  "thumb": "assets/thumbs/2090099602653577217.jpg",
   "width": 720,
   "height": 1280,
   "aspect_ratio": "9:16",
@@ -448,6 +190,7 @@
   "author_url": "https://x.com/4KWallpapers254",
   "tweet_url": "https://x.com/i/status/2090021706593083561",
   "video_url": "https://video.twimg.com/amplify_video/2089991576907034624/vid/avc1/672x1360/_rvpNR44NUgrlIJK.mp4?tag=29",
+  "thumb": "assets/thumbs/2089991576907034624.jpg",
   "width": 672,
   "height": 1360,
   "aspect_ratio": "9:18",
@@ -472,9 +215,10 @@
   "author_url": "https://x.com/4KWallpapers254",
   "tweet_url": "https://x.com/i/status/2090545910875066528",
   "video_url": "https://video.twimg.com/amplify_video/2090349759450243072/vid/avc1/640x1424/j7vQG9a_mHm4gz16.mp4?tag=29",
+  "thumb": "assets/thumbs/2090349759450243072.jpg",
   "width": 640,
   "height": 1424,
-  "aspect_ratio": "640:1424",
+  "aspect_ratio": "9:20",
   "quality": "FHD",
   "duration": 5.208,
   "tags": [
@@ -484,7 +228,9 @@
   "prompt_source": "unknown",
   "source": "4KWallpapers254",
   "phone_types": [
-   "通用"
+   "Samsung S20+/S22+",
+   "小米 14",
+   "OPPO Find X7"
   ],
   "collected_at": "2026-08-21"
  },
@@ -495,9 +241,10 @@
   "author_url": "https://x.com/4KWallpapers254",
   "tweet_url": "https://x.com/i/status/2090500360947282100",
   "video_url": "https://video.twimg.com/amplify_video/2090349424040157184/vid/avc1/640x1424/b0vGhp2cu1i3_Oh_.mp4?tag=29",
+  "thumb": "assets/thumbs/2090349424040157184.jpg",
   "width": 640,
   "height": 1424,
-  "aspect_ratio": "640:1424",
+  "aspect_ratio": "9:20",
   "quality": "FHD",
   "duration": 5.208,
   "tags": [
@@ -507,7 +254,9 @@
   "prompt_source": "unknown",
   "source": "4KWallpapers254",
   "phone_types": [
-   "通用"
+   "Samsung S20+/S22+",
+   "小米 14",
+   "OPPO Find X7"
   ],
   "collected_at": "2026-08-21"
  },
@@ -518,6 +267,7 @@
   "author_url": "https://x.com/4KWallpapers254",
   "tweet_url": "https://x.com/i/status/2090454811066175547",
   "video_url": "https://video.twimg.com/amplify_video/2090349372160757760/vid/avc1/640x1408/PBE9CenSvTN0VKsm.mp4?tag=29",
+  "thumb": "assets/thumbs/2090349372160757760.jpg",
   "width": 640,
   "height": 1408,
   "aspect_ratio": "9:20",
@@ -543,9 +293,10 @@
   "author_url": "https://x.com/4KWallpapers254",
   "tweet_url": "https://x.com/i/status/2090424108739604947",
   "video_url": "https://video.twimg.com/amplify_video/2090348776930390016/vid/avc1/640x1424/T-jvW8KYh9iwjGms.mp4?tag=29",
+  "thumb": "assets/thumbs/2090348776930390016.jpg",
   "width": 640,
   "height": 1424,
-  "aspect_ratio": "640:1424",
+  "aspect_ratio": "9:20",
   "quality": "FHD",
   "duration": 5.208,
   "tags": [
@@ -555,7 +306,9 @@
   "prompt_source": "unknown",
   "source": "4KWallpapers254",
   "phone_types": [
-   "通用"
+   "Samsung S20+/S22+",
+   "小米 14",
+   "OPPO Find X7"
   ],
   "collected_at": "2026-08-21"
  }
