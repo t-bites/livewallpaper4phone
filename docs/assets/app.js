@@ -179,6 +179,20 @@
       source: document.getElementById('filter-source')
     }).forEach(el => el.addEventListener('change', applyFilters));
     if (searchInput) searchInput.addEventListener('input', applyFilters);
+    const searchToggle = document.getElementById('search-toggle');
+    const filtersEl = document.getElementById('filters');
+    if (searchToggle && searchInput && filtersEl) {
+      searchToggle.addEventListener('click', () => {
+        const open = filtersEl.classList.toggle('search-open');
+        if (open) searchInput.focus(); else searchInput.blur();
+      });
+      searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          filtersEl.classList.remove('search-open');
+          searchInput.blur();
+        }
+      });
+    }
     const clearBtn = document.getElementById('clear-all');
     if (clearBtn) clearBtn.addEventListener('click', clearFilters);
   }
@@ -216,9 +230,8 @@
       if (query) {
         const inTitle = (w.title || '').toLowerCase().includes(query);
         const inTags = (w.tags || []).join(' ').toLowerCase().includes(query);
-        const inPrompt = (w.prompt || '').toLowerCase().includes(query);
         const inAuthor = (w.author || '').toLowerCase().includes(query);
-        if (!inTitle && !inTags && !inPrompt && !inAuthor) return false;
+        if (!inTitle && !inTags && !inAuthor) return false;
       }
       return true;
     });
@@ -341,17 +354,6 @@
         <span>${w.duration ? w.duration.toFixed(1) + 's' : ''}</span>
         <span>@${w.author}</span>
       </div>
-      ${w.prompt ? `
-        <div class="prompt-box">
-          <div class="prompt-label">${t('modal_prompt_label')}</div>
-          <code>${escapeHtml(w.prompt)}</code>
-        </div>
-      ` : `
-        <div class="prompt-box" style="opacity:0.5">
-          <div class="prompt-label">${t('modal_prompt_label')}</div>
-          <code>${t('modal_prompt_missing')}</code>
-        </div>
-      `}
       <div class="phone-types">
         <h4>${t('modal_phone_types')}</h4>
         <div class="chips">${(w.phone_types||[t('modal_generic')]).map(p => `<span class="chip">${p}</span>`).join('')}</div>

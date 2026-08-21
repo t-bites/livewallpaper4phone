@@ -107,17 +107,6 @@ def phone_types_from_ratio(ar):
     }
     return m.get(ar, ["通用"])
 
-def extract_prompt(title):
-    patterns = [
-        r'prompt[:\s]*["\']?(.*?)(?:["\']?$|https|\s{2,})',
-        r'提示词[：:\s]*(.*?)(?:$|https|\s{2,})',
-    ]
-    for p in patterns:
-        m = re.search(p, title, re.I)
-        if m:
-            return m.group(1).strip()
-    return None
-
 # ========== 采集核心 ==========
 def fetch_own_video_ids(tid):
     """fxtwitter 取帖子自有视频 media ID 列表（带缓存）；失败返回 None"""
@@ -208,7 +197,6 @@ def build_item(d, author, tweet_url):
     dur = d.get("duration", 0) or 0
     title = d.get("title", "").strip()
     ar = classify_aspect(w, h)
-    prompt = extract_prompt(title)
     return {
         "id": vid,
         "title": title,
@@ -223,8 +211,6 @@ def build_item(d, author, tweet_url):
         "quality": classify_quality(w, h),
         "duration": dur,
         "tags": classify_tags(title, author),
-        "prompt": prompt,
-        "prompt_source": "tweet" if prompt else "unknown",
         "source": author,
         "phone_types": phone_types_from_ratio(ar),
         "collected_at": time.strftime("%Y-%m-%d"),
@@ -312,7 +298,7 @@ def main():
             group_entries = entries
         else:
             group_entries = own + [b for b in borrowed if b["id"] not in claimed]
-        primary_id = own[-1]["id"] if own else group_entries[-1]["id"]
+        primary_id = group_entries[1]["id"] if len(group_entries) > 1 else group_entries[0]["id"]
         for e in group_entries:
             real_author = author
             if author.startswith("@issue"):  # issue 上报帖：用 yt-dlp 的真实作者名

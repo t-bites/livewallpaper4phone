@@ -8,10 +8,6 @@
 # 采集壁纸数据（按推文分组，含缩略图本地化）
 python3 scripts/collect_wallpapers.py --fresh
 
-# 提取 AI 提示词（需 OPENAI_API_KEY，可选）
-export OPENAI_API_KEY=sk-...
-python3 scripts/enrich_prompts.py
-
 # 处理 GitHub 上报 issue（需 gh CLI）
 python3 scripts/collect_wallpapers.py --from-issues
 
@@ -31,7 +27,6 @@ livewallpaper4phone/
 ├── plans/             # 实现计划
 ├── scripts/
 │   ├── collect_wallpapers.py   # 采集（按推文分组+去重+缩略图+issue 上报）
-│   ├── enrich_prompts.py       # 提示词提取（fxtwitter+LLM）
 │   └── wallpaper_core.py       # 共享纯函数
 ├── tests/             # 单元测试
 ├── data/raw/          # 抓取缓存（不入库）

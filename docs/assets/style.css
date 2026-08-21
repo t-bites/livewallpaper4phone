@@ -51,7 +51,20 @@ header .stats { font-size: 12px; color: var(--text-muted); }
   cursor: pointer; min-width: 100px;
 }
 .filters select:focus, .filters input:focus { border-color: var(--accent); }
-.filters input { flex: 1; min-width: 150px; }
+.filters .search-toggle {
+  flex: 0 0 auto;
+  background: var(--card-bg); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  width: 34px; height: 31px; font-size: 14px;
+  cursor: pointer; transition: 0.2s;
+}
+.filters .search-toggle:hover { border-color: var(--accent); }
+.filters #search {
+  flex: 0 1 auto; width: 0; min-width: 0; padding: 6px 0;
+  opacity: 0; cursor: text;
+  transition: width 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+}
+.filters.search-open #search { width: min(200px, 50vw); min-width: 140px; padding: 6px 12px; opacity: 1; }
 .filters label { font-size: 12px; color: var(--text-muted); margin-right: -4px; }
 .filters .clear-btn { 
   background: none; border: 1px solid var(--border); color: var(--text-muted);
@@ -196,12 +209,6 @@ header .stats { font-size: 12px; color: var(--text-muted); }
   background: var(--border); color: var(--text-muted);
 }
 .modal-body .meta .accent { background: var(--accent); color: #fff; }
-.modal-body .prompt-box {
-  background: #1e1e1e; border: 1px solid var(--border);
-  border-radius: 8px; padding: 12px; margin-bottom: 12px;
-}
-.modal-body .prompt-box .prompt-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-.modal-body .prompt-box code { font-size: 13px; color: #b8b8ff; word-break: break-all; }
 .modal-body .phone-types { margin-bottom: 12px; }
 .modal-body .phone-types h4 { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
 .modal-body .phone-types .chips { display: flex; flex-wrap: wrap; gap: 4px; }
