@@ -223,6 +223,20 @@
     if (resultCount) resultCount.textContent = t('result_count', { filtered: filtered.length, total: wallpapers.length });
   }
 
+  // ========== 视频加载（fetch→blob，绕过 Referer 限制）==========
+  const videoBlobCache = new Map(); // url -> blobUrl
+  async function loadVideoBlob(url) {
+    if (videoBlobCache.has(url)) return videoBlobCache.get(url);
+    try {
+      const resp = await fetch(url, { referrerPolicy: 'no-referrer' });
+      if (!resp.ok) return null;
+      const blob = await resp.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      videoBlobCache.set(url, blobUrl);
+      return blobUrl;
+    } catch(e) { return null; }
+  }
+
   // ========== 渲染网格 ==========
   function renderGrid() {
     if (!grid) return;
@@ -232,21 +246,11 @@
     }
     grid.innerHTML = filtered.map((w, i) => `
       <div class="wallpaper-card" data-idx="${i}" onclick="window.openModal(${i})" data-id="${w.id}">
-        <video
-          src="${w.video_url || ''}"
-          muted
-          loop
-          playsinline
-          preload="metadata"
-          poster=""
-          loading="lazy"
-          onmouseover="this.play()"
-          onmouseout="this.pause()"
-          onerror="this.style.display='none'"
-          referrerpolicy="no-referrer"
-        ></video>
-        <div class="overlay">
+        <div class="video-placeholder" style="width:100%;height:100%;background:#000;position:relative;">
           <div class="quality-badge">${w.quality||'HD'}</div>
+          <div class="loading-icon">▶</div>
+        </div>
+        <div class="overlay">
           <div class="tags">
             ${(w.tags||[]).slice(0,3).map(t => `<span class="tag">${t}</span>`).join('')}
           </div>
@@ -255,29 +259,51 @@
       </div>
     `).join('');
 
-    // IntersectionObserver for autoplay
-    const videos = grid.querySelectorAll('video');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.play().catch(() => {});
-        } else {
-          entry.target.pause();
+    // Hover 时 fetch blob 并播放
+    const cards = grid.querySelectorAll('.wallpaper-card');
+    let currentHover = null;
+    let prevBlobUrl = null;
+    cards.forEach(card => {
+      card.addEventListener('mouseenter', async () => {
+        if (currentHover) return;
+        currentHover = card;
+        const idx = parseInt(card.dataset.idx);
+        const w = filtered[idx];
+        if (!w.video_url) return;
+        const placeholder = card.querySelector('.video-placeholder');
+        const blobUrl = await loadVideoBlob(w.video_url);
+        if (!blobUrl) { card.querySelector('.loading-icon').textContent = '✗'; return; }
+        // Replace placeholder with video
+        const vid = document.createElement('video');
+        vid.src = blobUrl;
+        vid.autoplay = true;
+        vid.loop = true;
+        vid.muted = true;
+        vid.playsInline = true;
+        vid.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;';
+        placeholder.innerHTML = '';
+        placeholder.appendChild(vid);
+        card.querySelector('.loading-icon')?.remove();
+      });
+      card.addEventListener('mouseleave', () => {
+        if (currentHover === card) {
+          const vid = card.querySelector('video');
+          if (vid) vid.pause();
+          currentHover = null;
         }
       });
-    }, { threshold: 0.3 });
-    videos.forEach(v => observer.observe(v));
+    });
   }
 
   // ========== 详情弹窗 ==========
-  window.openModal = function(idx) {
+  window.openModal = async function(idx) {
     const w = filtered[idx];
     if (!w) return;
 
     const downloadUrl = w.tweet_url || '#';
     const videoUrl = w.video_url || '';
 
-    modalVideo.innerHTML = `<video src="${videoUrl}" autoplay loop muted playsinline controls referrerpolicy="no-referrer"></video>`;
+    modalVideo.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><div class="spinner"></div><span style="margin-left:8px">加载中...</span></div>`;
     modalBody.innerHTML = `
       <h2>${escapeHtml(w.title || '')}</h2>
       <div class="meta">
@@ -302,11 +328,20 @@
         <h4>${t('modal_phone_types')}</h4>
         <div class="chips">${(w.phone_types||[t('modal_generic')]).map(p => `<span class="chip">${p}</span>`).join('')}</div>
       </div>
-      <button class="download-btn" onclick="window.open('${videoUrl}', '_blank', 'noopener,noreferrer')" referrerpolicy="no-referrer">${t('modal_download_btn')}</button>
+      <button class="download-btn" onclick="window.open('${videoUrl}', '_blank', 'noopener,noreferrer')">${t('modal_download_btn')}</button>
       <div class="download-hint">${t('modal_download_hint')}</div>
       <a class="download-btn" style="background:var(--border);margin-top:6px;font-size:12px" href="${downloadUrl}" target="_blank" rel="noopener">${t('modal_view_x')}</a>
     `;
     modal.style.display = 'flex';
+
+    if (videoUrl) {
+      const blobUrl = await loadVideoBlob(videoUrl);
+      if (blobUrl) {
+        modalVideo.innerHTML = `<video src="${blobUrl}" autoplay loop muted playsinline controls style="max-width:100%;max-height:500px;border-radius:8px;"></video>`;
+      } else {
+        modalVideo.innerHTML = `<div style="color:red;padding:20px;text-align:center">视频加载失败</div>`;
+      }
+    }
   };
 
   window.closeModal = function(e) {
