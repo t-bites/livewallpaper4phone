@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""enrich_prompts.py — 抓取帖子正文+作者回复，LLM 提取 AI 生成提示词
-流水线: fxtwitter 正文 → jina 会话页找作者回复 ID → fxtwitter 回复全文 → LLM 提取
-缓存: data/raw/tweet_<id>.json / jina_<id>.md / prompts.json（重跑不重复调 LLM）
-环境变量: OPENAI_API_KEY(必需) OPENAI_BASE_URL(可选) LW4P_MODEL(可选) JINA_API_KEY(可选)
+"""enrich_prompts.py — 从推文正文提取 AI 生成提示词（LLM 判断有无，无则留空）
+流水线: fxtwitter 正文 → LLM 提取
+缓存: data/raw/tweet_<id>.json / prompts.json（重跑不重复调 LLM）
+环境变量: OPENAI_API_KEY(必需) OPENAI_BASE_URL(可选) LW4P_MODEL(可选)
 """
 import argparse, json, os, re, sys, time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import requests
-from wallpaper_core import status_id_from_url, extract_reply_ids
+from wallpaper_core import status_id_from_url
 
 BASE = Path(__file__).resolve().parent.parent
 DATA = BASE / "docs" / "assets" / "data" / "wallpapers.json"
@@ -17,11 +17,11 @@ RAW = BASE / "data" / "raw"
 PROMPTS_CACHE = RAW / "prompts.json"
 
 SYSTEM_PROMPT = (
-    "你是壁纸提示词提取器。输入是 X 帖子及其作者回复的文本 JSON。"
+    "你是壁纸提示词提取器。输入是一条 X 帖子的正文文本。"
     "判断其中是否包含 AI 生成视频/壁纸的提示词(prompt)。"
     "若有，返回干净的提示词正文本身（去掉「提示词：」「Seedance 2.5提示词：」等前缀与无关说明），"
-    "source 标注它来自主帖(tweet)还是作者回复(thread_reply)；若没有，prompt 和 source 均为 null。"
-    '只输出 JSON：{"prompt": string|null, "source": "tweet"|"thread_reply"|null}'
+    "source 为 tweet；若没有，prompt 和 source 均为 null。"
+    '只输出 JSON：{"prompt": string|null, "source": "tweet"|null}'
 )
 
 
@@ -36,36 +36,11 @@ def fetch_fxtwitter(sid):
     return d
 
 
-def fetch_jina(page_url, sid):
-    cache = RAW / f"jina_{sid}.md"
-    if cache.exists():
-        return cache.read_text()
-    headers = {}
-    if os.environ.get("JINA_API_KEY"):
-        headers["Authorization"] = f"Bearer {os.environ['JINA_API_KEY']}"
-    r = requests.get(f"https://r.jina.ai/{page_url}", headers=headers, timeout=60)
-    r.raise_for_status()
-    cache.write_text(r.text)
-    time.sleep(2)  # jina 免费档限速友好
-    return r.text
-
-
 def gather_texts(entry):
-    """返回 (status_id, {"main": 正文, "replies": [作者回复全文...]})"""
+    """返回 (status_id, {"main": 正文})"""
     sid = status_id_from_url(entry["tweet_url"])
     tw = fetch_fxtwitter(sid).get("tweet", {})
-    texts = {"main": tw.get("text") or "", "replies": []}
-    sn = (tw.get("author") or {}).get("screen_name") or ""
-    if sn:
-        md = fetch_jina(f"https://x.com/{sn}/status/{sid}", sid)
-        for rid in extract_reply_ids(md, sn, exclude_id=sid):
-            try:
-                rt = fetch_fxtwitter(rid).get("tweet", {})
-                if rt.get("text"):
-                    texts["replies"].append(rt["text"])
-            except Exception as e:
-                print(f"    ⚠️ 回复 {rid} 抓取失败: {e}")
-    return sid, texts
+    return sid, {"main": tw.get("text") or ""}
 
 
 def parse_llm_json(content):
@@ -81,7 +56,7 @@ def parse_llm_json(content):
     p = d.get("prompt")
     src = d.get("source")
     prompt = p.strip() if isinstance(p, str) and p.strip() else None
-    if prompt and src not in ("tweet", "thread_reply"):
+    if prompt and src != "tweet":
         src = "unknown"
     return {"prompt": prompt, "source": src if prompt else None}
 
@@ -149,7 +124,7 @@ def main():
             cache[sid] = result
             ok += 1
             has = "有" if result["prompt"] else "无"
-            print(f"  ✓ {sid}: {has}提示词 ({result['source']})")
+            print(f"  ✓ {sid}: {has}提示词")
         except Exception as e:
             print(f"  ⚠️ {sid}: {e}")
             cache.setdefault(sid, {"prompt": None, "source": "unknown", "_done": False})

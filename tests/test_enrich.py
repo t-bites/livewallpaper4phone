@@ -6,8 +6,8 @@ from enrich_prompts import parse_llm_json
 
 class TestParseLlmJson(unittest.TestCase):
     def test_plain(self):
-        d = parse_llm_json('{"prompt": "A cat", "source": "thread_reply"}')
-        self.assertEqual(d, {"prompt": "A cat", "source": "thread_reply"})
+        d = parse_llm_json('{"prompt": "A cat", "source": "tweet"}')
+        self.assertEqual(d, {"prompt": "A cat", "source": "tweet"})
 
     def test_fenced(self):
         d = parse_llm_json('```json\n{"prompt": "A cat", "source": "tweet"}\n```')
