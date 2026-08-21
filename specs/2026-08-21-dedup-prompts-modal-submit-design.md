@@ -14,26 +14,25 @@
 4. 缺少便捷的壁纸上报入口，新发现的好帖要手动改脚本配置
 5. 网格卡片默认黑屏（鼠标移入才加载视频），缺少静态预览图
 
-## 模块 1：视频分组保留 + 主视频标记（2026-08-21 修订）
+## 模块 1：按推文分组组织（2026-08-21 第二次修订）
 
-> 修订：不再丢弃同帖第二个视频；两个都保留，网格默认展示主视频，详情弹窗可左右切换。
+> 修订：同帖多个视频通常都是可用壁纸，全部保留；按推文组织，弹窗内切换后下载。
 
 ### 数据模型
 
 每条视频仍是扁平条目，新增两个字段：
 
 - `"group": "<tweet_status_id>"` —— 同一帖子的视频同组
-- `"is_primary": true|false` —— 主视频（网格默认展示的那个）
+- `"is_primary": true|false` —— 组代表（网格卡片默认展示的视频），取组内最后一个自有视频
 
 ### 配置格式
 
-`scripts/collect_wallpapers.py` 的 `TWEETS` 为结构化列表，`keep` 决定组内主视频：
+`TWEETS` 只需 author + 帖子 ID，无需 keep 配置：
 
 ```python
 TWEETS = [
-    {"author": "xiayitiaoAI", "id": "2089983524397007194",
-     "keep": "2089982426051448832"},          # 指定主视频 media ID
-    {"author": "...", "id": "...", "keep": "last"},  # 或 "first"/"last"/序号；缺省 last
+    {"author": "xiayitiaoAI", "id": "2089983524397007194"},
+    ...
 ]
 ```
 
@@ -47,22 +46,20 @@ TWEETS = [
 
 ### 前端行为
 
-- 网格只渲染 `is_primary` 条目；筛选器选项与计数也基于主视频
+- 网格每个推文一张卡片（只渲染 `is_primary` 条目）；筛选器选项与计数基于主视频
 - 详情弹窗提供 ‹ › 切换按钮与「n/N」位置指示，在同组视频间轮换；
   切换时更新视频与分辨率/清晰度等元信息 chip，标题/提示词/作者不变（同帖共享）
+- 用户切好视频后直接点下载，无需额外筛选步骤
 
-## 模块 2：提示词 AI 爬取管道
+## 模块 2：提示词提取（2026-08-21 简化）
 
-新建 `scripts/enrich_prompts.py`。技术路径已实测验证：
+> 修订：不爬 thread/评论区，只从当前推文正文提取；无提示词则留空。
+
+新建 `scripts/enrich_prompts.py`：
 
 ```
-① GET api.fxtwitter.com/status/<id>
-      → 帖子完整正文（JSON、免认证、无截断）
-② GET r.jina.ai/https://x.com/<author>/status/<id>
-      → 会话页 markdown，正则提取作者本人回复的 tweet ID
-③ 对每个回复 ID 再走 ①
-      → 回复全文（绕过页面 "Show more" 截断）
-④ LLM 从「正文 + 作者回复」中提取提示词
+① GET api.fxtwitter.com/status/<id> → 帖子完整正文（JSON、免认证、无截断）
+② LLM 从正文中判断并提取 AI 生成提示词（无则 null）
 ```
 
 ### LLM 接入
@@ -72,14 +69,14 @@ OpenAI 兼容 `/chat/completions` 接口：
 - `OPENAI_BASE_URL`（可选，默认官方地址）
 - `LW4P_MODEL`（可选，默认 `gpt-4o-mini`）
 
-LLM 返回结构化 JSON：`{prompt: str|null, source: "tweet"|"thread_reply"|null}`。
+LLM 返回结构化 JSON：`{prompt: str|null, source: "tweet"|null}`。
 要求返回干净的提示词正文（剥离「Seedance 2.5提示词：」等前缀说明）。
 
 ### 缓存与合并
 
-- 原始抓取缓存：`data/raw/tweet_<id>.json`（fxtwitter 与 jina 响应）
+- 原始抓取缓存：`data/raw/tweet_<id>.json`
 - 提取结果缓存：`data/raw/prompts.json`，键为 status ID；已有缓存不重复调 LLM
-- 合并进 `wallpapers.json`：按 `tweet_url` 解析 status ID 匹配条目，写入 `prompt` 与 `prompt_source`（`tweet` / `thread_reply` / `unknown`）
+- 合并进 `wallpapers.json`：按 `tweet_url` 解析 status ID 匹配条目（同组条目共享同一 prompt），写入 `prompt` 与 `prompt_source`（`tweet` / `unknown`）
 
 ### 错误处理
 
@@ -143,7 +140,8 @@ LLM 返回结构化 JSON：`{prompt: str|null, source: "tweet"|"thread_reply"|nu
 - **Python 单元测试**（纯函数，无需网络）：keep 解析优先级、同运行内去重、跨运行去重保留原帖、issue 正文解析 status ID。LLM/fxtwitter/jina 用保存的原始响应 fixture 离线测解析逻辑
 - **采集冒烟**：`--dry-run` 标志只打印计划不写文件；真实跑一遍核对输出条数与去重结果
 - **前端手测清单**：桌面/移动断点弹窗布局、详情默认可见、网格缩略图默认显示（含移动端）、hover 视频正常替换、上报弹窗密码错误/正确两态、非法链接拦截、zh/en 文案切换
-- **端到端**：跑通 enrich_prompts.py 后抽查夏一跳帖的提示词与原帖评论区一致
+- **端到端**：跑通 enrich_prompts.py 后抽查含正文提示词的帖子提取正确；无提示词条目 prompt_source=unknown
+- **筛选栏**：不含「是否有提示词」筛选项
 
 ## 不做的事（YAGNI）
 
