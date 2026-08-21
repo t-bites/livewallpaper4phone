@@ -15,28 +15,23 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import requests
-from wallpaper_core import select_video, dedupe_by_id, parse_issue_status_ids
+from wallpaper_core import select_video, dedupe_by_id, parse_issue_status_ids, split_own_and_borrowed
 
 BASE = Path(__file__).resolve().parent.parent
 OUT = BASE / "docs" / "assets" / "data" / "wallpapers.json"
 THUMB_DIR = BASE / "docs" / "assets" / "thumbs"
 REPO = "t-bites/livewallpaper4phone"
 
-# ========== 帖子列表（author + 帖子 ID + keep 保留规则）==========
-# keep: 具体 media ID | "first" | "last" | 序号(1起)；缺省= last（多视频时打印警告提醒复核）
+# ========== 帖子列表（author + 帖子 ID）==========
+# 同帖多个视频全部保留（按推文组织），网格默认展示组内最后一个自有视频
 TWEETS = [
-    # 夏一跳: 帖子自述「右边是原视频」，保留第2个
-    {"author": "xiayitiaoAI",      "id": "2089983524397007194", "keep": "2089982426051448832"},
-    # aestheticz_hub: 第1个为 3:4 演示，保留 9:16 竖屏
-    {"author": "aestheticz_hub",   "id": "2090330911497961531", "keep": "2090330883454898176"},
-    {"author": "Aesthetics_Walls", "id": "2090124422149710067", "keep": "2090124380139622400"},
-    # Unique Wallpaper: 每帖含引用旧帖的 2 个视频，保留自有竖屏视频
-    {"author": "Unique Wallpaper", "id": "2090346670672208085", "keep": "2090346605958340608"},
-    {"author": "Unique Wallpaper", "id": "2090339921307267203", "keep": "2090339873039187969"},
-    # Edimakor: 引用了夏一跳的 2 个视频，只保留自有视频
-    {"author": "Edimakor Taiwan",  "id": "2090272078054527409", "keep": "2090272021754388480"},
-    {"author": "11:11",            "id": "2090099632810647930", "keep": "2090099602653577217"},
-    # 4KWallpapers254: 单视频帖，默认 last 即可
+    {"author": "xiayitiaoAI",      "id": "2089983524397007194"},
+    {"author": "aestheticz_hub",   "id": "2090330911497961531"},
+    {"author": "Aesthetics_Walls", "id": "2090124422149710067"},
+    {"author": "Unique Wallpaper", "id": "2090346670672208085"},
+    {"author": "Unique Wallpaper", "id": "2090339921307267203"},
+    {"author": "Edimakor Taiwan",  "id": "2090272078054527409"},
+    {"author": "11:11",            "id": "2090099632810647930"},
     {"author": "4KWallpapers254",  "id": "2090021706593083561"},
     {"author": "4KWallpapers254",  "id": "2090545910875066528"},
     {"author": "4KWallpapers254",  "id": "2090500360947282100"},
@@ -124,6 +119,24 @@ def extract_prompt(title):
     return None
 
 # ========== 采集核心 ==========
+def fetch_own_video_ids(tid):
+    """fxtwitter 取帖子自有视频 media ID 列表（带缓存）；失败返回 None"""
+    cache = BASE / "data" / "raw" / f"tweet_{tid}.json"
+    try:
+        if cache.exists():
+            d = json.load(open(cache))
+        else:
+            r = requests.get(f"https://api.fxtwitter.com/status/{tid}", timeout=30)
+            r.raise_for_status()
+            d = r.json()
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(json.dumps(d, ensure_ascii=False, indent=1))
+        vids = (d.get("tweet", {}).get("media") or {}).get("videos") or []
+        return [v.get("id") for v in vids if v.get("id")]
+    except Exception as e:
+        print(f"  ⚠️ fxtwitter 自有视频列表获取失败 {tid}: {e}")
+        return None
+
 def pick_best_video_url(formats):
     best_res, url = 0, ""
     for f in formats:
@@ -255,44 +268,64 @@ def main():
     ap.add_argument("--dry-run", action="store_true", help="只打印计划，不请求网络不写文件")
     args = ap.parse_args()
 
-    queue = [(t["author"], t["id"], t.get("keep")) for t in TWEETS]
+    queue = [(t["author"], t["id"]) for t in TWEETS]
     issue_map = {}
     if args.from_issues:
         issues = fetch_issues()
         reported = parse_issue_status_ids(issues)
         issue_map = {sid: num for num, sid in reported}
-        known = {tid for _, tid, _ in queue}
-        new = [(f"@issue#{num}", sid, None) for num, sid in reported if sid not in known]
+        known = {tid for _, tid in queue}
+        new = [(f"@issue#{num}", sid) for num, sid in reported if sid not in known]
         queue.extend(new)
         print(f"📋 issue 上报新增 {len(new)} 帖")
 
     if args.dry_run:
-        for a, tid, k in queue:
-            print(f"  将采集 {a} status={tid} keep={k or '(默认last)'}")
+        for a, tid in queue:
+            print(f"  将采集 {a} status={tid}")
         print(f"共 {len(queue)} 帖（dry-run 结束）")
         return
 
     existing = [] if args.fresh else (json.load(open(OUT)) if OUT.exists() else [])
     existing = dedupe_by_id(existing)  # 清理历史重复
+
+    # 预取各帖自有视频 ID（用于引用归属判定）
+    own_map = {}
+    for _, tid in queue:
+        ids = fetch_own_video_ids(tid)
+        own_map[tid] = set(ids) if ids is not None else None
+    claimed = {}  # media_id -> 认领的帖子（配置顺序先到先得）
+    for _, tid in queue:
+        for mid in own_map[tid] or []:
+            claimed.setdefault(mid, tid)
+
     all_items, collected_sids = [], set()
-    for author, tid, keep in queue:
+    for author, tid in queue:
         url = f"https://x.com/i/status/{tid}"
         print(f"📡 {author} ({tid})")
         entries = fetch_entries(url)
-        kept = select_video(entries, keep)
-        if kept is None:
-            print("  ⚠️ 未匹配到可保留的视频，跳过")
+        if not entries:
             continue
-        if keep in (None, "") and len(entries) > 1:
-            print(f"  ⚠️ 该帖有 {len(entries)} 个视频且未配置 keep，默认保留最后一个，请人工复核！")
-        real_author = author
-        if author.startswith("@issue"):  # issue 上报帖：用 yt-dlp 的真实作者名
-            real_author = kept.get("uploader") or "unknown"
-        all_items.append(build_item(kept, real_author, url))
+        own_ids = own_map.get(tid)
+        own, borrowed = split_own_and_borrowed(entries, own_ids or set())
+        if own_ids is None:
+            print("  ⚠️ 未获取到自有视频列表，全部条目归本组（降级模式）")
+            group_entries = entries
+        else:
+            group_entries = own + [b for b in borrowed if b["id"] not in claimed]
+        primary_id = own[-1]["id"] if own else group_entries[-1]["id"]
+        for e in group_entries:
+            real_author = author
+            if author.startswith("@issue"):  # issue 上报帖：用 yt-dlp 的真实作者名
+                real_author = e.get("uploader") or "unknown"
+            item = build_item(e, real_author, url)
+            item["group"] = tid
+            item["is_primary"] = (e["id"] == primary_id)
+            all_items.append(item)
         collected_sids.add(tid)
+        print(f"  ✓ {len(group_entries)} 个视频，主视频 {primary_id}")
         time.sleep(1)
 
-    merged = dedupe_by_id(all_items)      # 本次运行内去重（跨帖引用）
+    merged = dedupe_by_id(all_items)      # 本次运行内去重（跨帖引用兜底）
     merged = merge_new(merged, existing)   # 与已有合并
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(merged, ensure_ascii=False, indent=1))
